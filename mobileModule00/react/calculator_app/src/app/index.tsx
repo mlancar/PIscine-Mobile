@@ -4,8 +4,8 @@ import { Platform, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-import { Pressable, Text } from 'react-native';
-import { useEffect, useState } from 'react';
+import { Text } from 'react-native';
+import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TouchableOpacity } from 'react-native';
 
@@ -40,6 +40,30 @@ export default function HomeScreen() {
   const [input, setInput] = useState('0');
   const [result, setResult] = useState('0');
 
+  const handlePress = (btn) => {
+    if (btn === 'C') {
+      setInput(prev => prev.slice(0, -1) || '0');
+    }
+    else if (btn === 'AC') {
+      setInput('0');
+      setResult('0');
+    }
+    else if (btn === '=') {
+      try {
+        const res = eval(input.replace('x', '*'));
+        setResult(res.toString());
+      }
+      catch(e) {
+        setResult('Error');
+      }
+    }
+    else {
+      //write input
+      setInput((prev) => prev === '0' ? btn : prev + btn);
+      //si prev est egal a 0 alors remplace par btn sinon ajoute btn a la fin de prev
+      //pour eviter d'avoir 09 au lieu de juste 9
+    }
+  }
   return (
     <SafeAreaView style={styles.container}>
       <ThemedView style={styles.appBar}>
@@ -56,7 +80,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             key={colIndex}
             style={styles.button}
-            onPress={() => console.log("button pressed :", btn)}
+            onPress={() => handlePress(btn)}
           >
             <Text style={[
                 styles.buttonText,
