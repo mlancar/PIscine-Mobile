@@ -8,6 +8,7 @@ import { Text } from 'react-native';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TouchableOpacity } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 
 function getDevMenuHint() {
   if (Platform.OS === 'web') {
@@ -65,7 +66,8 @@ export default function HomeScreen() {
     }
   }
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <StatusBar style="light" backgroundColor="#ac3838"></StatusBar>
       <ThemedView style={styles.appBar}>
         <ThemedText style={styles.appBarTitle}>Calculator</ThemedText>
       </ThemedView>
@@ -93,7 +95,6 @@ export default function HomeScreen() {
         ))}
       </ThemedView>
     ))}
-      <ThemedView></ThemedView>
     </SafeAreaView>
   );
 }
@@ -104,6 +105,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingBottom: 0,
     marginBottom: 0,
+    backgroundColor: '#2f444a',
   },
   safeArea: {
     flex: 1,
@@ -125,13 +127,6 @@ const styles = StyleSheet.create({
   },
   code: {
     textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
   },
   appBar: {
     height: 60,
