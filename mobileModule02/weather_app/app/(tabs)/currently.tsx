@@ -1,9 +1,8 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
-import { useSearch } from '@/context/SearchContext';
-import { useEffect, useState } from 'react';
-import WeatherCard from '@/components/WeatherCard';
 import TopBar from '@/components/TopBar';
+import WeatherCard from '@/components/WeatherCard';
 import { useWeather } from '@/context/WeatherContext';
+import { useState } from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Currently() {
     
@@ -17,12 +16,9 @@ export default function Currently() {
   };
   const [cities, setCities] = useState<City[]>([]);
   const [input, setInput] = useState('');
-  const [query, setQuery] = useState('');
-  const [localInput, setLocalInput] = useState('');  
-  const { setSearchInput } = useSearch();
   const [showSuggestions, setShowSuggestions] = useState(false);
-  
   const { weather, getWeather, currentPlace, setCurrentPlace } = useWeather();
+  const time = "currently";
   
     return (
     <View style={styles.container}>
@@ -40,11 +36,8 @@ export default function Currently() {
             renderItem={({ item }) => (
               <TouchableOpacity
                   onPress={() => {
-                      setQuery(item.name);
-                      setLocalInput(item.name);
-                      setSearchInput(item.name);
                       setCities([]);
-                      getWeather(item.latitude, item.longitude, { city: item.name, region: item.admin1, country: item.country});
+                      getWeather(time, item.latitude, item.longitude, { city: item.name, region: item.admin1, country: item.country});
                       setShowSuggestions(false);
                   }}
               >
@@ -60,7 +53,7 @@ export default function Currently() {
             <View>
               {/* <Text style={styles.text} >Currently</Text> */}
               {/* <Text style={styles.text} >{location?.coords.latitude.toFixed(6)}.{location?.coords.longitude.toFixed(6)}</Text> */}
-              <WeatherCard weather={weather} currentPlace={currentPlace}></WeatherCard>
+              <WeatherCard mode="currently" weather={weather} currentPlace={currentPlace}></WeatherCard>
             </View>
           )}
         </View>

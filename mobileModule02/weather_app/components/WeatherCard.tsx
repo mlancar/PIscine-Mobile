@@ -1,21 +1,21 @@
 import * as React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import CurrentlyWeather from '@/components/CurrentlyWeather';
+import TodayWeather from '@/components/TodayWeather';
+import WeeklyWeather from '@/components/WeeklyWeather';
 
-export default function WeatherCard({ weather, currentPlace }) {
+export default function WeatherCard({ mode, hourly, weather, currentPlace }) {
 
-    return(
-    <View style={styles.container}>
-        <View style={styles.info}>
-            <Text style={styles.text}> {currentPlace?.city}</Text>
-            <Text style={styles.text}> {currentPlace?.region}</Text>
-            <Text style={styles.text}> {currentPlace?.country}</Text>
-            <Text style={styles.text}> {weather?.temperature}</Text>
-            <Text style={styles.text}> weather description</Text>
-            <Text style={styles.text}> {weather?.windspeed}</Text>
-        </View>
-    </View>
-    );
-    
+    if (mode === "currently") {
+        return <CurrentlyWeather weather={weather} currentPlace={currentPlace} />;
+    }
+    if (mode === "today") {
+        return <TodayWeather hourly={hourly} weather={weather} currentPlace={currentPlace} />;
+    }
+    if (mode === "weekly") {
+        return <WeeklyWeather weather={weather} currentPlace={currentPlace} />;
+    }
+    return null;    
 }
 
 const styles = StyleSheet.create({
