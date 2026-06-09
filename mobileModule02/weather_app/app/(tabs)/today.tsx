@@ -12,17 +12,18 @@ export default function Today() {
     latitude: number;
     longitude: number;
     country: string;
-    admin1?: string,
+    state?: string,
   };
   const [cities, setCities] = useState<City[]>([]);
   const [input, setInput] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const { weather, getWeather, currentPlace, setCurrentPlace, hourly, setHourly } = useWeather();
-  const time = "today";
+  const [error, setError] = useState('');
 
   return (
   <View style={styles.container}>
     <TopBar
+        setError={setError}
       input={input}
       setInput={setInput}
       setCities={setCities}
@@ -37,7 +38,7 @@ export default function Today() {
             <TouchableOpacity
                 onPress={() => {
                     setCities([]);
-                    getWeather(time, item.latitude, item.longitude, { city: item.name, region: item.admin1, country: item.country});
+                    getWeather(item.latitude, item.longitude, { city: item.name, region: item.state, country: item.country});
                     setShowSuggestions(false);
                 }}
             >
@@ -46,18 +47,21 @@ export default function Today() {
           )}
         />
       )}
-      <View style={styles.weatherContent}>
-        {!location ? (
-          <Text style={styles.textError} >Geolocation is not available, please enable it in your App settings</Text>
-        ) : (
-          <View style={styles.weatherCard}>
-            {/* <Text style={styles.text} >Currently</Text> */}
-            {/* <Text style={styles.text} >{location?.coords.latitude.toFixed(6)}.{location?.coords.longitude.toFixed(6)}</Text> */}
-            <WeatherCard  mode="today" hourly={hourly} weather={weather} currentPlace={currentPlace}></WeatherCard>
-          </View>
-        )}
-      </View>
-      {/* <Text style={styles.text} >{searchInput}</Text> */}
+       <View style={styles.weatherContent}>
+          {!location ? (
+            <Text style={styles.textError} >Geolocation is not available, please enable it in your App settings</Text>
+          ) : (
+            <View>
+            {error ? (
+              <Text style={styles.textError} >{error}</Text>
+              ) : (
+                <View>
+                  <WeatherCard mode="today" hourly={hourly} weather={weather} currentPlace={currentPlace}></WeatherCard>
+                </View>
+              )}
+            </View>
+          )}
+        </View>
   </View>
   );
 }
@@ -68,7 +72,6 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   suggestion: {
-    // padding: 12,
     position: 'absolute',
     zIndex: 999,
     top: 119,

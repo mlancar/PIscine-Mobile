@@ -1,10 +1,10 @@
-import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 import CurrentlyWeather from '@/components/CurrentlyWeather';
 import TodayWeather from '@/components/TodayWeather';
 import WeeklyWeather from '@/components/WeeklyWeather';
+import * as React from 'react';
+import { StyleSheet } from 'react-native';
 
-export default function WeatherCard({ mode, hourly, weather, currentPlace }) {
+export default function WeatherCard({ mode, weekly, hourly, weather, currentPlace }) {
 
     if (mode === "currently") {
         return <CurrentlyWeather weather={weather} currentPlace={currentPlace} />;
@@ -13,7 +13,7 @@ export default function WeatherCard({ mode, hourly, weather, currentPlace }) {
         return <TodayWeather hourly={hourly} weather={weather} currentPlace={currentPlace} />;
     }
     if (mode === "weekly") {
-        return <WeeklyWeather weather={weather} currentPlace={currentPlace} />;
+        return <WeeklyWeather weekly={weekly} weather={weather} currentPlace={currentPlace} />;
     }
     return null;    
 }

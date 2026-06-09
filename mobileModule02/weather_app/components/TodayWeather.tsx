@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 export default function TodayWeather({ hourly, weather, currentPlace }) {
 
-    // const hourly = weather?.hourly;
     const forecast =
     hourly?.time?.map((time, index) => ({
         id: index.toString(),
@@ -54,25 +53,20 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignSelf: "stretch",
-        // width: "100%",
     },
     info: {
         alignItems: 'center',
     },
     hourlyInfo: {
-        // backgroundColor: 'red',
         alignSelf: "stretch",
         alignItems: 'center',
 
     },
     text: {
-        // backgroundColor: 'blue',
         fontSize: 24,
     },
     list: {
         padding: 12,
         alignSelf: "stretch",
-        // alignItems: 'center',
-        // flex: 1,
     },
 });

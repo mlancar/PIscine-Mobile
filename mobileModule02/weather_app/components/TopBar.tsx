@@ -1,19 +1,24 @@
 import { StyleSheet, TextInput, Text, TouchableOpacity, View, FlatList } from 'react-native';
-import { useState } from 'react';
 import { Colors } from '@/constants/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSearch } from '@/context/SearchContext';
 import { ThemedView } from '@/components/themed-view';
 import { Ionicons } from '@expo/vector-icons';
+import { useWeather } from '@/context/WeatherContext';
 
-export default function TopBar( {input, setInput, setCities, setShowSuggestions} ) {
+export default function TopBar( { setError, input, setInput, setCities, setShowSuggestions} ) {
 
-
+  const { loadWeather} = useWeather();
   const searchCities = async (query) => {
     try {
       const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=5&language=fr`);
 
     const json = await response.json();
+    if (!json.results) {
+      setCities([]);
+      setError("City not found");
+      return;
+    }
+    setError('');
     const formatted = (json.results || []).map((city, index) => ({
       id: index.toString(),
       name: city.name,
@@ -21,7 +26,6 @@ export default function TopBar( {input, setInput, setCities, setShowSuggestions}
       longitude: city.longitude,
       country: city.country,
     }));
-
     setCities(formatted);
     }
     catch (error) {
@@ -49,7 +53,7 @@ export default function TopBar( {input, setInput, setCities, setShowSuggestions}
         </ThemedView>
         <ThemedView style={styles.sendContainer}>
           <Ionicons name="remove-outline" size={44} color="white" style={{ transform: [{ rotate: '90deg' }] }} />
-          <TouchableOpacity onPress={() => setSearchInput('')}>
+          <TouchableOpacity onPress={() => { loadWeather() }}>
             <Ionicons name="paper-plane" size={24} color="white" paddingRight="10"/>
           </TouchableOpacity>
         </ThemedView>

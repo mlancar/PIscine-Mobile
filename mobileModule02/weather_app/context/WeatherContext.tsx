@@ -2,6 +2,8 @@ import * as Location from 'expo-location';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 const WeatherContext = createContext<{
+    weekly: any;
+    setWeekly: (value: any) => void;
     hourly: any;
     setHourly: (value: any) => void;
     weather: any;
@@ -9,7 +11,11 @@ const WeatherContext = createContext<{
     currentPlace: any;
     setCurrentPlace: (value: any) => void;
     getWeather: (lat: number, lon: number) => void;
+    loadWeather: () => void;
+
 }>({
+    weekly: null,
+    setWeekly: () => {},
     hourly: null,
     setHourly: () => {},
     weather: null,
@@ -17,45 +23,65 @@ const WeatherContext = createContext<{
     currentPlace: null,
     setCurrentPlace: () => {},
     getWeather: () => {},
+    loadWeather: () => {},
+
 });
 
 export function WeatherProvider({ children }) {
     const [weather, setWeather] = useState();
     const [hourly, setHourly] = useState();
+    const [weekly, setWeekly] = useState();
+
     const [currentPlace, setCurrentPlace] = useState<{
         city: string;
         region: string;
         country: string;
     } | null>(null);
     
-    const getWeather = async(time, lat, lon, currentPlace: {city: string; region: string; country: string;} | null = null) => {
-        // console.log('GETWEATHER');
+    const getWeather = async(lat, lon, currentPlace: {city: string; region: string; country: string;} | null = null) => {
+
         if (!currentPlace) {
             const [place] = await Location.reverseGeocodeAsync({ latitude: lat, longitude: lon });
             setCurrentPlace({
-            city: place.city,
-            region: place.region,
-            country: place.country,
+                city: place.city ?? "",
+                region: place.region ?? "",
+                country: place.country ?? "",
             });
         }
         else {
             setCurrentPlace(currentPlace); // placeName = { city, region, country }
         }
-        await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,wind_speed_10mx`)
+        await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,wind_speed_10m_max`)
         .then((response) => {
-            console.log('status:', response.status);
+            // console.log('status:', response.status);
             if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
                 return response.json();
         })
         .then((json) => {
             setWeather(json.current_weather)
             setHourly(json.hourly);
-            // console.log("HOURLY =", json.hourly);
+            setWeekly(json.daily);
         })
         .catch((error) => {
             console.error(error);
         })
     }
+
+    const loadWeather = async () => {
+        
+        const { coords } = await Location.getCurrentPositionAsync({});
+        const [place] = await Location.reverseGeocodeAsync({
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+        });
+        setCurrentPlace({
+            city: place.city ?? "",
+            region: place.region ?? "",
+            country: place.country ?? "",
+        });
+
+        getWeather(coords.latitude, coords.longitude);
+    };
     useEffect(() => {
         (async () => {
             const { status } = await Location.requestForegroundPermissionsAsync();
@@ -63,26 +89,12 @@ export function WeatherProvider({ children }) {
                 console.log('Permission to access location was denied');
                 return;
             }
-            const { coords } = await Location.getCurrentPositionAsync({});
-            const [place] = await Location.reverseGeocodeAsync({
-                latitude: coords.latitude,
-                longitude: coords.longitude,
-            });
-            setCurrentPlace({
-                city: place.city ?? "",
-                region: place.region ?? "",
-                country: place.country ?? "",
-            });
-
-            getWeather("currently", coords.latitude, coords.longitude);
+            loadWeather();
         })();
     }, []);
 
-    // console.log(JSON.stringify(weather, null, 2));
-    // console.log(JSON.stringify(currentPlace, null, 2));
-
     return (
-        <WeatherContext.Provider value={{ weather, setWeather, getWeather, currentPlace, setCurrentPlace, hourly, setHourly }}>
+        <WeatherContext.Provider value={{ weather, setWeather, getWeather, currentPlace, setCurrentPlace, hourly, setHourly, weekly, setWeekly, loadWeather }}>
         {children}
         </WeatherContext.Provider>
     );

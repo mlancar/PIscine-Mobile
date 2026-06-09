@@ -12,23 +12,24 @@ export default function Currently() {
     latitude: number;
     longitude: number;
     country: string;
-    admin1?: string,
+    region: string,
   };
   const [cities, setCities] = useState<City[]>([]);
   const [input, setInput] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const { weather, getWeather, currentPlace, setCurrentPlace } = useWeather();
-  const time = "currently";
-  
+  const [error, setError] = useState('');
+
     return (
     <View style={styles.container}>
       <TopBar
+        setError={setError}
         input={input}
         setInput={setInput}
         setCities={setCities}
         setShowSuggestions={setShowSuggestions}
       />
-      {showSuggestions && cities.length > 0 && (
+      {showSuggestions && cities?.length > 0 && (
         <FlatList
             style={styles.suggestion}
             data={cities}
@@ -37,7 +38,11 @@ export default function Currently() {
               <TouchableOpacity
                   onPress={() => {
                       setCities([]);
-                      getWeather(time, item.latitude, item.longitude, { city: item.name, region: item.admin1, country: item.country});
+                      getWeather(item.latitude, item.longitude, {
+                        city: item.name,
+                        region: item.region,
+                        country: item.country
+                      });
                       setShowSuggestions(false);
                   }}
               >
@@ -51,13 +56,16 @@ export default function Currently() {
             <Text style={styles.textError} >Geolocation is not available, please enable it in your App settings</Text>
           ) : (
             <View>
-              {/* <Text style={styles.text} >Currently</Text> */}
-              {/* <Text style={styles.text} >{location?.coords.latitude.toFixed(6)}.{location?.coords.longitude.toFixed(6)}</Text> */}
-              <WeatherCard mode="currently" weather={weather} currentPlace={currentPlace}></WeatherCard>
+            {error ? (
+              <Text style={styles.textError} >{error}</Text>
+              ) : (
+                <View>
+                  <WeatherCard mode="currently" weather={weather} currentPlace={currentPlace}></WeatherCard>
+                </View>
+              )}
             </View>
           )}
         </View>
-        {/* <Text style={styles.text} >{searchInput}</Text> */}
     </View>
     );
 }
@@ -68,7 +76,6 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   suggestion: {
-    // padding: 12,
     position: 'absolute',
     zIndex: 999,
     top: 119,

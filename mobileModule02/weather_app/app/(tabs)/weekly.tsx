@@ -1,25 +1,120 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { useSearch } from '@/context/SearchContext';
+import TopBar from '@/components/TopBar';
+import WeatherCard from '@/components/WeatherCard';
+import { useWeather } from '@/context/WeatherContext';
+import { useState } from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Weekly() {
-    const { searchInput } = useSearch();
     
-    return (
-        <View style={styles.container}>
-            <Text style={styles.text} >Weekly</Text>
-            <Text style={styles.text} >{searchInput}</Text>
-        </View>
-    );
+  type City = {
+    id: string;
+    name: string;
+    latitude: number;
+    longitude: number;
+    country: string;
+    state?: string,
+  };
+  const [cities, setCities] = useState<City[]>([]);
+  const [input, setInput] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const { weather, getWeather, currentPlace, setCurrentPlace, hourly, setHourly, weekly, setWeekly } = useWeather();
+  const time = "weekly";
+  const [error, setError] = useState('');
+
+  return (
+  <View style={styles.container}>
+    <TopBar
+      setError={error}
+      input={input}
+      setInput={setInput}
+      setCities={setCities}
+      setShowSuggestions={setShowSuggestions}
+    />
+    {showSuggestions && cities.length > 0 && (
+      <FlatList
+          style={styles.suggestion}
+          data={cities}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+                onPress={() => {
+                    setCities([]);
+                    getWeather(item.latitude, item.longitude, { city: item.name, region: item.state, country: item.country});
+                    setShowSuggestions(false);
+                }}
+            >
+            <Text style={styles.searchText}>{item.name} ({item.country})</Text>
+          </TouchableOpacity>
+          )}
+        />
+      )}
+      <View style={styles.weatherContent}>
+        {!location ? (
+          <Text style={styles.textError} >Geolocation is not available, please enable it in your App settings</Text>
+        ) : (
+          <View>
+          {error ? (
+            <Text style={styles.textError} >{error}</Text>
+            ) : (
+              <View>
+                <WeatherCard mode="weekly" weekly={weekly} hourly={hourly} weather={weather} currentPlace={currentPlace}></WeatherCard>
+              </View>
+            )}
+          </View>
+        )}
+      </View>
+  </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    position: 'relative',
+  },
+  suggestion: {
+    // padding: 12,
+    position: 'absolute',
+    zIndex: 999,
+    top: 119,
+    left: 0,
+    right: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
     backgroundColor: 'white',
   },
-text: {
+  searchText: {
+    padding: 18,
+    fontSize: 22,
+    color: 'black',
+    borderRadius: 10,
+    borderStyle: 'solid',
+    borderBottomWidth: 1,
+    borderColor: '#66b6d3',
+  },
+  weatherContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ecf0f7',
     fontSize: 30,
+  },
+  text: {
+    fontSize: 30,
+    textAlign: 'center',
+
+  },
+  textError: {
+    fontSize: 26,
+    color: 'red',
+    textAlign: 'center',
+  },
+  weatherCard: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: 'green',
+    alignSelf: "stretch",
+
   },
 });
