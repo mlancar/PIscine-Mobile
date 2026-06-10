@@ -4,7 +4,7 @@ import { useWeather } from '@/context/WeatherContext';
 import { useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-export default function Currently() {
+export default function Today() {
     
   type City = {
     id: string;
@@ -17,41 +17,40 @@ export default function Currently() {
   const [cities, setCities] = useState<City[]>([]);
   const [input, setInput] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const { weather, getWeather, currentPlace, setCurrentPlace } = useWeather();
-  const [error, setError] = useState('');
+  const { weather, getWeather, currentPlace, setCurrentPlace, hourly, setHourly } = useWeather();
+  const [error, setError] = useState();
 
-    return (
-    <View style={styles.container}>
-      <TopBar
-        setError={setError}
-        input={input}
-        setInput={setInput}
-        setCities={setCities}
-        setShowSuggestions={setShowSuggestions}
-      />
-      {showSuggestions && cities?.length > 0 && (
-        <FlatList
-            style={styles.suggestion}
-            data={cities}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                  onPress={() => {
-                      setCities([]);
-                      getWeather(item.latitude, item.longitude, {
+  return (
+  <View style={styles.container}>
+    <TopBar
+      setError={setError}
+      input={input}
+      setInput={setInput}
+      setCities={setCities}
+      setShowSuggestions={setShowSuggestions}
+    />
+    {showSuggestions && cities.length > 0 && (
+      <FlatList
+          style={styles.suggestion}
+          data={cities}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+                onPress={() => {
+                    setCities([]);
+                    getWeather(item.latitude, item.longitude, {
                         city: item.name,
-                        region: item.region,
-                        country: item.country
-                      });
-                      setShowSuggestions(false);
-                  }}
-              >
-              <Text style={styles.searchText}>{item.name} ({item.country})</Text>
-            </TouchableOpacity>
-            )}
-          />
-        )}
-        <View style={styles.weatherContent}>
+                        region: item.state,
+                        country: item.country});
+                    setShowSuggestions(false);
+                }}
+            >
+            <Text style={styles.searchText}>{item.name} ({item.country})</Text>
+          </TouchableOpacity>
+          )}
+        />
+      )}
+       <View style={styles.weatherContent}>
           {!location ? (
             <Text style={styles.textError} >Geolocation is not available, please enable it in your App settings</Text>
           ) : (
@@ -60,14 +59,14 @@ export default function Currently() {
               <Text style={styles.textError} >{error}</Text>
               ) : (
                 <View>
-                  <WeatherCard mode="currently" weather={weather} currentPlace={currentPlace}></WeatherCard>
+                  <WeatherCard mode="today" hourly={hourly} weather={weather} currentPlace={currentPlace}></WeatherCard>
                 </View>
               )}
             </View>
           )}
         </View>
-    </View>
-    );
+  </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -98,7 +97,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f2f5f8',
+    backgroundColor: '#ecf0f7',
     fontSize: 30,
   },
   text: {
@@ -110,5 +109,13 @@ const styles = StyleSheet.create({
     fontSize: 26,
     color: 'red',
     textAlign: 'center',
+  },
+  weatherCard: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: 'green',
+    alignSelf: "stretch",
+
   },
 });

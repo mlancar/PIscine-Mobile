@@ -10,10 +10,10 @@ export default function CurrentlyWeather({ weather, currentPlace }) {
             <Text style={styles.text}> {currentPlace?.city}</Text>
             <Text style={styles.text}> {currentPlace?.region}</Text>
             <Text style={styles.text}> {currentPlace?.country}</Text>
-            <Text style={styles.text}> {weather?.temperature}</Text>
+            <Text style={styles.text}> {weather?.temperature}°C</Text>
             {/* <Text style={styles.text}> weather description</Text> */}
             <Text style={styles.text}>{weatherCodes[weather?.weathercode]}</Text>
-            <Text style={styles.text}> {weather?.windspeed}</Text>
+            <Text style={styles.text}> {weather?.windspeed} km/h</Text>
         </View>
     </View>
     );

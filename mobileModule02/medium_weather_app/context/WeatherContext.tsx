@@ -39,7 +39,6 @@ export function WeatherProvider({ children }) {
     } | null>(null);
     
     const getWeather = async(lat, lon, currentPlace: {city: string; region: string; country: string;} | null = null) => {
-
         if (!currentPlace) {
             const [place] = await Location.reverseGeocodeAsync({ latitude: lat, longitude: lon });
             setCurrentPlace({
@@ -49,11 +48,10 @@ export function WeatherProvider({ children }) {
             });
         }
         else {
-            setCurrentPlace(currentPlace); // placeName = { city, region, country }
+            setCurrentPlace(currentPlace);
         }
         await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,wind_speed_10m_max`)
         .then((response) => {
-            // console.log('status:', response.status);
             if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
                 return response.json();
         })
@@ -68,19 +66,23 @@ export function WeatherProvider({ children }) {
     }
 
     const loadWeather = async () => {
-        
-        const { coords } = await Location.getCurrentPositionAsync({});
-        const [place] = await Location.reverseGeocodeAsync({
-            latitude: coords.latitude,
-            longitude: coords.longitude,
-        });
-        setCurrentPlace({
-            city: place.city ?? "",
-            region: place.region ?? "",
-            country: place.country ?? "",
-        });
-
-        getWeather(coords.latitude, coords.longitude);
+        try {
+            const { coords } = await Location.getCurrentPositionAsync({});
+            const [place] = await Location.reverseGeocodeAsync({
+                latitude: coords.latitude,
+                longitude: coords.longitude,
+            });
+            setCurrentPlace({
+                city: place.city ?? "",
+                region: place.region ?? "",
+                country: place.country ?? "",
+            });
+            getWeather(coords.latitude, coords.longitude);
+        }
+        catch (error) {
+            console.log('Permission to access location was denied');
+            setCurrentPlace(null);
+        }
     };
     useEffect(() => {
         (async () => {

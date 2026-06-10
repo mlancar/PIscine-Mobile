@@ -3,8 +3,6 @@ import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 export default function WeeklyWeather({ weekly, weather, currentPlace }) {
 
-    // const weekly = weather?.weekly;
-    // console.log("WEEKLY", weekly);
     const weeklyForecast =
     weekly?.time?.map((time, index) => ({
         id: index.toString(),
@@ -14,9 +12,6 @@ export default function WeeklyWeather({ weekly, weather, currentPlace }) {
         windSpeed: weekly.wind_speed_10m?.[index],
     })) ?? [];
 
-    // const daily = new Date().toISOString().split("T")[0];
-
-    // const weeklyForecast = forecast.filter((item, index) => index % 24 === 0);
     return(
     <View style={styles.container}>
         <View style={styles.info}>
@@ -51,25 +46,20 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignSelf: "stretch",
-        // width: "100%",
     },
     info: {
         alignItems: 'center',
     },
     weeklyInfo: {
-        // backgroundColor: 'red',
         alignSelf: "stretch",
         alignItems: 'center',
 
     },
     text: {
-        // backgroundColor: 'blue',
         fontSize: 24,
     },
     list: {
         padding: 12,
         alignSelf: "stretch",
-        // alignItems: 'center',
-        // flex: 1,
     },
 });

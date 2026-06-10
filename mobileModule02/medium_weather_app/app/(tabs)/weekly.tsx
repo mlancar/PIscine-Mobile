@@ -12,19 +12,18 @@ export default function Weekly() {
     latitude: number;
     longitude: number;
     country: string;
-    state?: string,
+    region: string,
   };
   const [cities, setCities] = useState<City[]>([]);
   const [input, setInput] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const { weather, getWeather, currentPlace, setCurrentPlace, hourly, setHourly, weekly, setWeekly } = useWeather();
-  const time = "weekly";
-  const [error, setError] = useState('');
+  const [error, setError] = useState();
 
   return (
   <View style={styles.container}>
     <TopBar
-      setError={error}
+      setError={setError}
       input={input}
       setInput={setInput}
       setCities={setCities}

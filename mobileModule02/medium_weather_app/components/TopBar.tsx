@@ -1,7 +1,6 @@
 import { StyleSheet, TextInput, Text, TouchableOpacity, View, FlatList } from 'react-native';
 import { Colors } from '@/constants/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ThemedView } from '@/components/themed-view';
 import { Ionicons } from '@expo/vector-icons';
 import { useWeather } from '@/context/WeatherContext';
 
@@ -25,6 +24,7 @@ export default function TopBar( { setError, input, setInput, setCities, setShowS
       latitude: city.latitude,
       longitude: city.longitude,
       country: city.country,
+      region: city.admin1,
     }));
     setCities(formatted);
     }
@@ -35,8 +35,8 @@ export default function TopBar( { setError, input, setInput, setCities, setShowS
   };
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-      <ThemedView style={styles.topBar}>
-        <ThemedView style={styles.searchContainer}>
+      <View style={styles.topBar}>
+        <View style={styles.searchContainer}>
           <Ionicons name="search" size={24} color="white" />
           <TextInput
             style={styles.input}
@@ -50,14 +50,14 @@ export default function TopBar( { setError, input, setInput, setCities, setShowS
             placeholder="Search location..."
           />
           
-        </ThemedView>
-        <ThemedView style={styles.sendContainer}>
+        </View>
+        <View style={styles.sendContainer}>
           <Ionicons name="remove-outline" size={44} color="white" style={{ transform: [{ rotate: '90deg' }] }} />
           <TouchableOpacity onPress={() => { loadWeather() }}>
             <Ionicons name="paper-plane" size={24} color="white" paddingRight="10"/>
           </TouchableOpacity>
-        </ThemedView>
-      </ThemedView>
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
