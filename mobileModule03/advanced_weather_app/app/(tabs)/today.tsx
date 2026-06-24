@@ -1,0 +1,119 @@
+import TopBar from '@/components/TopBar';
+import WeatherCard from '@/components/WeatherCard';
+import { useWeather } from '@/context/WeatherContext';
+import { useState } from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+export default function Today() {
+    
+  type City = {
+    id: string;
+    name: string;
+    latitude: number;
+    longitude: number;
+    country: string;
+    region: string,
+  };
+  const [cities, setCities] = useState<City[]>([]);
+  const [input, setInput] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const { weather, getWeather, currentPlace, setCurrentPlace, hourly, setHourly } = useWeather();
+  const [error, setError] = useState();
+
+  return (
+  <View style={styles.container}>
+    <TopBar
+      setError={setError}
+      input={input}
+      setInput={setInput}
+      setCities={setCities}
+      setShowSuggestions={setShowSuggestions}
+    />
+    {showSuggestions && cities.length > 0 && (
+      <FlatList
+          style={styles.suggestion}
+          data={cities}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+                onPress={() => {
+                    setCities([]);
+                    getWeather(item.latitude, item.longitude, {
+                        city: item.name,
+                        region: item.state,
+                        country: item.country});
+                    setShowSuggestions(false);
+                }}
+            >
+            <Text style={styles.searchText}>{item.name} ({item.country})</Text>
+          </TouchableOpacity>
+          )}
+        />
+      )}
+       <View style={styles.weatherContent}>
+          {!location ? (
+            <Text style={styles.textError} >Geolocation is not available, please enable it in your App settings</Text>
+          ) : (
+            <View>
+            {error ? (
+              <Text style={styles.textError} >{error}</Text>
+              ) : (
+                <View>
+                  <WeatherCard mode="today" hourly={hourly} weather={weather} currentPlace={currentPlace}></WeatherCard>
+                </View>
+              )}
+            </View>
+          )}
+        </View>
+  </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: 'relative',
+  },
+  suggestion: {
+    position: 'absolute',
+    zIndex: 999,
+    top: 119,
+    left: 0,
+    right: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    backgroundColor: 'transparent',
+  },
+  searchText: {
+    padding: 18,
+    fontSize: 22,
+    color: 'black',
+    borderRadius: 10,
+    borderStyle: 'solid',
+    borderBottomWidth: 1,
+    borderColor: '#66b6d3',
+  },
+  weatherContent: {
+    flex: 1,
+    alignItems: 'center',
+    fontSize: 30,
+  },
+  text: {
+    fontSize: 30,
+    textAlign: 'center',
+
+  },
+  textError: {
+    fontSize: 26,
+    color: 'red',
+    textAlign: 'center',
+  },
+  weatherCard: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: 'green',
+    alignSelf: "stretch",
+
+  },
+});

@@ -34,7 +34,7 @@ export default function Calculator() {
         {row.map((btn, colIndex) => (
           <TouchableOpacity
           key={colIndex}
-          style={[styles.button, { height: isPortrait ? 100 : 60 }]}
+          style={[styles.button, { height: isPortrait ? 100 : 50 }]}
           onPress={() => handlePress(btn)}
           >
             <Text style={[

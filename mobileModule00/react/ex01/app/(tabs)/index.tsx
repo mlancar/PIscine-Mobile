@@ -48,7 +48,7 @@ export default function HomeScreen() {
           styles.button,
           { opacity: pressed ? 0.6 : 1 }
         ]}
-        onPress={() => console.log('Button pressed')} >
+        onPress={(changeText)} >
         <Text style={styles.buttonText} >Click Me</Text>
       </Pressable>
     </ThemedView>

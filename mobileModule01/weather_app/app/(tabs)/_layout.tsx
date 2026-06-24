@@ -1,17 +1,14 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
-import { useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Ionicons } from '@expo/vector-icons';
-import { SearchProvider } from '../context/SearchContext';
-// Dans TopBar
-import { useSearch } from '../context/SearchContext';
+import { Tabs } from 'expo-router';
+import React, { useState } from 'react';
+import { StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useSearch } from '@/context/SearchContext';
 
 function TopBar() {
 
@@ -33,8 +30,8 @@ function TopBar() {
         </ThemedView>
         <ThemedView style={styles.sendContainer}>
           <Ionicons name="remove-outline" size={44} color="white" style={{ transform: [{ rotate: '90deg' }] }} />
-          <TouchableOpacity onPress={() => setSearchInput('Geolocalisation')}>
-            <Ionicons name="paper-plane" size={24} color="white" paddingRight="10"/>
+          <TouchableOpacity onPress={() => setSearchInput('Geolocation')}>
+            <Ionicons name="location-outline" size={24} color="white" paddingRight="10"/>
           </TouchableOpacity>
         </ThemedView>
       </ThemedView>

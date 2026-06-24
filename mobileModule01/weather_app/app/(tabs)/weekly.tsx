@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { useSearch } from '../context/SearchContext';
+import { StyleSheet, Text, View } from 'react-native';
+import { useSearch } from '@/context/SearchContext';
 
 export default function Weekly() {
     const { searchInput } = useSearch();

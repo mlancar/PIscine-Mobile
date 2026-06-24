@@ -9,7 +9,7 @@ export default function Calculator() {
     ['7', '8', '9', 'C', 'AC'], 
     ['4', '5', '6', '+', '-'], 
     ['1', '2', '3', 'x', '/'], 
-    ['0', '.', '00', '=', ' '],
+    ['0', '.', '00', '=', ''],
   ];
 
   const [input, setInput] = useState('0');
@@ -28,11 +28,13 @@ export default function Calculator() {
     }
     else if (btn === '=') {
       try {
-        const res = eval(input.replace('x', '*'));
+        const expression = input.replaceAll('x', '*');
+        const res = eval(expression);
         setResult(res.toString());
       }
       catch(e) {
-        setResult('Error');
+        // console.log(e);
+        setResult('Errr');
       }
     }
     else {
@@ -54,7 +56,7 @@ export default function Calculator() {
         {row.map((btn, colIndex) => (
           <TouchableOpacity
           key={colIndex}
-          style={[styles.button, { height: isPortrait ? 100 : 60 }]}
+          style={[styles.button, { height: isPortrait ? 100 : 50 }]}
           onPress={() => handlePress(btn)}
           >
             <Text style={[
