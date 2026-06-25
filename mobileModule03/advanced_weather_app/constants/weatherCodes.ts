@@ -9,11 +9,11 @@ export const weatherCodes = {
 };
 
 export const weatherIcons = {
-  0: "sunny",
+  0: "sunny-outline",
   1: "partly-sunny",
-  2: "cloud",
+  2: "cloud-outline",
   3: "cloudy",
-  45: "clound-outline",
+  45: "cloud",
   61: "rainy",
   71: "snow",
 };

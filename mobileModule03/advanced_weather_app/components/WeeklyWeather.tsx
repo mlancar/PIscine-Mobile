@@ -2,7 +2,6 @@ import * as React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { weatherIcons } from '@/constants/weatherCodes';
 import { LineChart } from 'react-native-chart-kit';
-import { Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function WeeklyWeather({ weekly, weather, currentPlace }) {
@@ -26,13 +25,17 @@ export default function WeeklyWeather({ weekly, weather, currentPlace }) {
             <Text style={styles.title}>Weekly temparatures</Text>
             <LineChart
                 data={{
-                    labels: weeklyForecast?.time?.map((item) => item.time.slice(5)),
+                    labels: weeklyForecast?.map((item) => item.time.slice(5)),
                     datasets: [
                         {
                             data: weeklyForecast.map(item => item.temp_max),
+                            color: () => "#e5540b",
+                            strokeWidth: 3,
                         },
                         {
                             data: weeklyForecast.map(item => item.temp_min),
+                            color: () => "#0260ac",
+                            strokeWidth: 3,
                         },
                     ],
                 }}
@@ -40,11 +43,17 @@ export default function WeeklyWeather({ weekly, weather, currentPlace }) {
                 width={400}
                 height={300}
                 chartConfig={{
+                    propsForDots: {
+                        r: "4",
+                        strokeWidth: "2",
+                        stroke: "#ffffff",
+                        fill: "#ffffff",
+                    },
                     backgroundGradientFrom: 'transparent',
                     backgroundGradientTo: 'transparent',
                     decimalPlaces: 0,
                         color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                        labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`
+                        labelColor: () => "#ffffff",
                 }}
                 bezier
                 style={{
@@ -52,10 +61,14 @@ export default function WeeklyWeather({ weekly, weather, currentPlace }) {
                 }}
             />
             <View style={styles.legend}>
-                <Ionicons name="trending-down" color="blue"/>
-                <Text style={{color: 'white'}}>Min temperature</Text>
-                <Ionicons name="trending-up" color="red"/>
-                <Text style={{color: 'white'}}>Max temperature</Text>
+                <View style={styles.legendText}>
+                    <Ionicons name="trending-down" color="#0260ac" size={18}/>
+                    <Text style={{color: 'white', fontSize: 15 }}>Min temperature</Text>
+                </View>
+                <View style={styles.legendText}>
+                    <Ionicons name="trending-up" color="#e5540b" size={18}/>
+                    <Text style={{color: 'white', fontSize: 15}}>Max temperature</Text>
+                </View>
             </View>
         </View>
         <View style={styles.weeklyInfo}>
@@ -66,10 +79,10 @@ export default function WeeklyWeather({ weekly, weather, currentPlace }) {
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <View style={styles.weeklyInfoContent}>
-                        <Text style={styles.text}>{item.time}</Text>
-                        <Ionicons name={weatherIcons[weather?.weathercode] || "help-circle"} size={30} color="white"/>
-                        <Text style={styles.text}>{item.temp_min}°C</Text>
-                        <Text style={styles.text}>{item.temp_max}°C</Text>
+                        <Text style={styles.text}>{item.time.slice(5)}</Text>
+                        <Ionicons name={weatherIcons[weather?.weathercode] || "help-circle"} size={30} color="white" style={{ padding: 18}}/>
+                        <Text style={[styles.text, {color: '#e5540b'}]}>{item.temp_max}°C max</Text>
+                        <Text style={[styles.text, {color: '#0282eb'}]}>{item.temp_min}°C min</Text>
                     </View>
                 )}
                 contentContainerStyle={{
@@ -91,16 +104,23 @@ const styles = StyleSheet.create({
     },
     chart: {
         alignItems: 'center',
+        justifyContent: 'space-evenly',
+        // backgroundColor: 'blue',
     },
     title: {
         fontSize: 20,
-        color: '#e0e0e0',
-        
+        color: 'rgba(255, 255, 255, 0.5)',
     },
     legend: {
         flexDirection: 'row',
-        // width: 100,
+        // justifyContent: 'space-between',
+        gap: 14,
+        paddingBottom: 30,
         // backgroundColor: 'red',
+    },
+    legendText: {
+        flexDirection: 'row',
+        gap: 4,
     },
     info: {
         alignItems: 'center',
@@ -112,7 +132,9 @@ const styles = StyleSheet.create({
     weeklyInfoContent: {
         flexDirection: 'column',
         alignItems: 'center',
-        gap: 20,
+        // gap: 16,
+        padding: 20,
+        // backgroundColor: 'red',
     },
     city: {
         fontSize: 24,
