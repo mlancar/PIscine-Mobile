@@ -3,9 +3,24 @@ import WeatherCard from '@/components/WeatherCard';
 import { useWeather } from '@/context/WeatherContext';
 import { useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { runOnJS } from 'react-native-reanimated';
+import { router } from 'expo-router';
 
 export default function Currently() {
-    
+  
+  const goToToday = () => router.replace('/(tabs)/today');
+  const goToHome = () => router.replace('/');
+
+  const gesture = Gesture.Pan()
+    .onEnd((e) => {
+      if (e.translationX < -100) {
+        runOnJS(goToToday)();
+      }
+      if (e.translationX > 100) {
+        runOnJS(goToHome)();
+      }
+    });
   type City = {
     id: string;
     name: string;
@@ -17,56 +32,62 @@ export default function Currently() {
   const [cities, setCities] = useState<City[]>([]);
   const [input, setInput] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const { weather, getWeather, currentPlace, setCurrentPlace } = useWeather();
-  const [error, setError] = useState();
+  const { weather, getWeather, currentPlace, hourly, weekly, error, setError } = useWeather();
 
     return (
-    <View style={styles.container}>
-      <TopBar
-        setError={setError}
-        input={input}
-        setInput={setInput}
-        setCities={setCities}
-        setShowSuggestions={setShowSuggestions}
-      />
-      {showSuggestions && cities?.length > 0 && (
-        <FlatList
-            style={styles.suggestion}
-            data={cities}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                  onPress={() => {
-                      setCities([]);
-                      getWeather(item.latitude, item.longitude, {
-                        city: item.name,
-                        region: item.region,
-                        country: item.country
-                      });
-                      setShowSuggestions(false);
-                  }}
-              >
-              <Text style={styles.searchText}>{item.name} ({item.country})</Text>
-            </TouchableOpacity>
-            )}
-          />
-        )}
-        <View style={styles.weatherContent}>
-          {!currentPlace ? (
-            <Text style={styles.textError} >Geolocation is not available, please enable it in your App settings</Text>
-          ) : (
-            <View>
-            {error ? (
-              <Text style={styles.textError} >{error}</Text>
-              ) : (
-                <View>
-                  <WeatherCard mode="currently" weather={weather} currentPlace={currentPlace}></WeatherCard>
-                </View>
+      <GestureDetector gesture={gesture}>
+      <View style={styles.container}>
+        <TopBar
+          setError={setError}
+          input={input}
+          setInput={setInput}
+          setCities={setCities}
+          setShowSuggestions={setShowSuggestions}
+        />
+        {showSuggestions && cities?.length > 0 && (
+          <FlatList
+              style={styles.suggestion}
+              data={cities}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                    onPress={() => {
+                        setInput('');
+                        setCities([]);
+                        getWeather(item.latitude, item.longitude, {
+                          city: item.name,
+                          region: item.region,
+                          country: item.country
+                        });
+                        setShowSuggestions(false);
+                    }}
+                >
+                <View style={styles.searchText}>
+                  <Text style={{ fontSize: 20, fontWeight: 'bold'}}>{item.name}</Text>
+                  <Text style={{ fontSize: 20, paddingLeft: 8, color: '#e2e2e2'}}>{item.region}, {item.country}</Text>
+                </View>               
+              </TouchableOpacity>
               )}
-            </View>
+            />
           )}
-        </View>
-    </View>
+          <View style={styles.weatherContent}>
+            {!currentPlace ? (
+              <Text style={styles.textError} >Geolocation is not available, please enable it in your App settings</Text>
+            ) : (
+              <View>
+              {error ? (
+                <Text style={styles.textError} >{error}</Text>
+                ) : (
+                  <View>
+                    <WeatherCard mode="currently" weekly={weekly} hourly={hourly} weather={weather} currentPlace={currentPlace}></WeatherCard>
+                  </View>
+                )}
+              </View>
+            )}
+          </View>
+      </View>
+    </GestureDetector>
+
     );
 }
 
@@ -84,29 +105,28 @@ const styles = StyleSheet.create({
     right: 0,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
-    backgroundColor: 'white',
+    backgroundColor: '#0a75ae90',
+    // backgroundColor: 'transparent',
   },
   searchText: {
-    padding: 18,
-    fontSize: 22,
-    color: 'black',
+    flexDirection: 'row',
+    padding: 22,
+    backgroundColor: 'transparent',
     borderRadius: 10,
     borderStyle: 'solid',
     borderBottomWidth: 1,
     borderColor: '#66b6d3',
   },
   weatherContent: {
-    // flex: 1,
-    // justifyContent: 'center',
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    // alignContent: 'center',
-    // backgroundColor: 'red',
+    alignContent: 'center',
     fontSize: 30,
   },
   text: {
     fontSize: 30,
     textAlign: 'center',
-
   },
   textError: {
     fontSize: 26,

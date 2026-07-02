@@ -1,5 +1,4 @@
 import { StyleSheet, TextInput, Text, TouchableOpacity, View, FlatList } from 'react-native';
-import { Colors } from '@/constants/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useWeather } from '@/context/WeatherContext';
@@ -31,7 +30,6 @@ export default function TopBar( { setError, input, setInput, setCities, setShowS
     catch (error) {
       console.error(error);
     }
-
   };
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
@@ -53,7 +51,7 @@ export default function TopBar( { setError, input, setInput, setCities, setShowS
         <View style={styles.sendContainer}>
           <Ionicons name="remove-outline" size={44} color="#66b6d3" style={{ transform: [{ rotate: '90deg' }] }} />
           <TouchableOpacity onPress={() => { loadWeather() }}>
-            <Ionicons name="paper-plane" size={24} color="#66b6d3" paddingRight="10"/>
+            <Ionicons name="location-outline" size={28} color="#66b6d3" paddingRight="10"/>
           </TouchableOpacity>
         </View>
       </View>
@@ -89,13 +87,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
   input: {
     height: 40,
     fontSize: 22,
     paddingLeft: 10,
-    // color: 'white',
     color: '#58f5f2',
-
+    flex: 1,
   },
 });

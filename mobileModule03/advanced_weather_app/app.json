@@ -11,7 +11,7 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "REASON_FOR_REQUEST"
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "mobile_module01"
       }
     },
     "android": {
