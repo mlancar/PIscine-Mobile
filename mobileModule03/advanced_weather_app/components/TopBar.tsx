@@ -17,6 +17,7 @@ export default function TopBar( { setError, input, setInput, setCities, setShowS
       return;
     }
     setError('');
+    
     const formatted = (json.results || []).map((city, index) => ({
       id: index.toString(),
       name: city.name,
@@ -44,7 +45,10 @@ export default function TopBar( { setError, input, setInput, setCities, setShowS
               searchCities(value, setCities);
               setShowSuggestions(true);
             }}
-            onSubmitEditing={() => searchCities(input)}
+            onSubmitEditing={() => {
+                searchCities(input);
+                setInput('');
+            }}
             placeholder="Search location..."
           />
         </View>
