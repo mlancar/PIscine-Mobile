@@ -1,8 +1,8 @@
+import { weatherIcons } from '@/constants/weatherCodes';
+import { Ionicons } from '@expo/vector-icons';
 import * as React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { weatherIcons } from '@/constants/weatherCodes';
 import { LineChart } from 'react-native-chart-kit';
-import { Ionicons } from '@expo/vector-icons';
 
 export default function WeeklyWeather({ weekly, weather, currentPlace }) {
 
@@ -99,24 +99,23 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignSelf: "stretch",
-        justifyContent: 'space-evenly',
+        // justifyContent: 'space-evenly',
         padding: 20,
     },
     chart: {
         alignItems: 'center',
-        justifyContent: 'space-evenly',
-        // backgroundColor: 'blue',
+        padding: 20,
+        // justifyContent: 'space-evenly',
     },
     title: {
         fontSize: 20,
+        padding: 20,
         color: 'rgba(255, 255, 255, 0.5)',
     },
     legend: {
         flexDirection: 'row',
-        // justifyContent: 'space-between',
         gap: 14,
-        paddingBottom: 30,
-        // backgroundColor: 'red',
+        // padding: 10,
     },
     legendText: {
         flexDirection: 'row',
@@ -132,9 +131,9 @@ const styles = StyleSheet.create({
     weeklyInfoContent: {
         flexDirection: 'column',
         alignItems: 'center',
-        // gap: 16,
-        padding: 20,
-        // backgroundColor: 'red',
+        padding: 2,
+        gap: 8,
+
     },
     city: {
         fontSize: 24,
@@ -146,7 +145,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: 'white',
-        fontSize: 24,
+        fontSize: 22,
     },
     list: {
         padding: 12,

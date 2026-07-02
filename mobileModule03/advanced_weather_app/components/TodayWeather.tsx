@@ -1,10 +1,10 @@
+import { weatherIcons } from '@/constants/weatherCodes';
+import { Ionicons } from '@expo/vector-icons';
 import * as React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { weatherCodes } from '@/constants/weatherCodes';
-import { weatherIcons } from '@/constants/weatherCodes';
 import { LineChart } from 'react-native-chart-kit';
-import { Dimensions } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Directions } from 'react-native-gesture-handler';
 
 export default function TodayWeather({ hourly, weather, currentPlace }) {
 
@@ -29,7 +29,8 @@ export default function TodayWeather({ hourly, weather, currentPlace }) {
             <Text style={styles.city}> {currentPlace?.city}</Text>
             <Text style={styles.place}> {currentPlace?.region}, {currentPlace?.country}</Text>
         </View>
-        <View>
+        <View style={styles.chart}>
+            <Text style={styles.title}>Today temparatures</Text>
             <LineChart
                 data={{
                     labels: hourly.time.slice(0, 24).map((t, index) => index % 3 === 0 ? t.split('T')[1].slice(0, 5) : ''),
@@ -66,7 +67,10 @@ export default function TodayWeather({ hourly, weather, currentPlace }) {
                         <Text style={styles.text}>{item.time}</Text>
                         <Ionicons name={weatherIcons[weather?.weathercode] || "help-circle"} size={30} color="white"/>
                         <Text style={styles.text}>{item.temperature}°C</Text>
-                        <Text style={styles.text}>{item.windSpeed} km/h</Text>
+                        <View style={{flexDirection: "row", alignItems: 'center',}}>
+                            <MaterialCommunityIcons name="weather-windy" size={20} color="#ffffff" />
+                            <Text style={[styles.text, styles.wind]}>{item.windSpeed} km/h</Text>
+                        </View>
                     </View>
                 )}
                 contentContainerStyle={{
@@ -85,19 +89,28 @@ const styles = StyleSheet.create({
         padding: 20,
         flex: 1,
         alignSelf: "stretch",
-        justifyContent: 'space-evenly',
     },
     info: {
         alignItems: 'center',
     },
+    chart: {
+        alignItems: 'center',
+        padding: 20,
+    },
+    title: {
+        fontSize: 20,
+        padding: 20,
+        color: 'rgba(255, 255, 255, 0.5)',
+    },
     hourlyInfo: {
         alignSelf: "stretch",
         alignItems: 'center',
+        paddingTop: 4,
     },
     hourlyInfoContent: {
         flexDirection: 'column',
         alignItems: 'center',
-        gap: 20,
+        gap: 18,
     },
     city: {
         fontSize: 24,
@@ -108,8 +121,11 @@ const styles = StyleSheet.create({
         fontSize: 28,
     },
     text: {
-        fontSize: 24,
+        fontSize: 22,
         color: 'white',
+    },
+    wind: {
+        padding: 6,
     },
     list: {
         padding: 12,

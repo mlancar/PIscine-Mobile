@@ -1,11 +1,11 @@
-import { weatherCodes } from '@/constants/weatherCodes';
-import { weatherIcons } from '@/constants/weatherCodes';
+import { weatherCodes, weatherIcons } from '@/constants/weatherCodes';
 import { Ionicons } from '@expo/vector-icons';
 import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function CurrentlyWeather({ weather, currentPlace }) {
 
+    console.log("weather code descrption: ", weather.weathercode);
     return(
     <View style={styles.container}>
         <View style={styles.info}>
