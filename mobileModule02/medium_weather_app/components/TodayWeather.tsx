@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { weatherCodes } from '@/constants/weatherCodes';
 
 export default function TodayWeather({ hourly, weather, currentPlace }) {
 
@@ -26,22 +27,19 @@ export default function TodayWeather({ hourly, weather, currentPlace }) {
             <Text style={styles.text}> {currentPlace?.country}</Text>
         </View>
 
-        <View style={styles.hourlyInfo}>
+        <View>
             <FlatList
                 style={styles.list}
                 data={todayForecast}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                    <View style={{ flexDirection: 'row', gap: 40,}}>
-                        <Text style={styles.text}>{item.time}</Text>
-                        <Text style={styles.text}>{item.temperature}°C</Text>
-                        <Text style={styles.text}>{item.windSpeed} km/h</Text>
+                    <View style={styles.row}>
+                        <Text style={[styles.text, styles.col]}>{item.time}</Text>
+                        <Text style={[styles.text, styles.col]}>{item.temperature}°C</Text>
+                        <Text style={[styles.text, styles.col]}>{weatherCodes[weather?.weathercode]}</Text>
+                        <Text style={[styles.text, styles.col]}>{item.windSpeed} km/h</Text>
                     </View>
                 )}
-                contentContainerStyle={{
-                    alignItems: 'center',
-
-                }}
             />
         </View>
     </View>
@@ -53,17 +51,19 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignSelf: "stretch",
+        padding: 12,
     },
     info: {
         alignItems: 'center',
     },
-    hourlyInfo: {
-        alignSelf: "stretch",
-        alignItems: 'center',
-
+    row: {
+        flexDirection: 'row',
     },
     text: {
-        fontSize: 24,
+        fontSize: 22,
+    },
+    col: {
+        width: 100,
     },
     list: {
         padding: 12,

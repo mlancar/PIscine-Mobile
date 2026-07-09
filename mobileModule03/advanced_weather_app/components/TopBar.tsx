@@ -53,7 +53,7 @@ export default function TopBar( { setError, input, setInput, setCities, setShowS
           />
         </View>
         <View style={styles.sendContainer}>
-          <Ionicons name="remove-outline" size={44} color="#66b6d3" style={{ transform: [{ rotate: '90deg' }] }} />
+          <Text style={{fontSize: 34, color: '#66b6d3', paddingRight: 18, paddingBottom: 4}}>|</Text>
           <TouchableOpacity onPress={() => { loadWeather() }}>
             <Ionicons name="location-outline" size={28} color="#66b6d3" paddingRight="10"/>
           </TouchableOpacity>

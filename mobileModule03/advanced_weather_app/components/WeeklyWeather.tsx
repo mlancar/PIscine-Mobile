@@ -22,7 +22,7 @@ export default function WeeklyWeather({ weekly, weather, currentPlace }) {
             <Text style={styles.place}> {currentPlace?.region}, {currentPlace?.country}</Text>
         </View>
         <View style={styles.chart}>
-            <Text style={styles.title}>Weekly temparatures</Text>
+            <Text style={styles.title}>Weekly temperatures</Text>
             <LineChart
                 data={{
                     labels: weeklyForecast?.map((item) => item.time.slice(5)),
@@ -99,13 +99,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignSelf: "stretch",
-        // justifyContent: 'space-evenly',
         padding: 20,
     },
     chart: {
         alignItems: 'center',
         padding: 20,
-        // justifyContent: 'space-evenly',
     },
     title: {
         fontSize: 20,
@@ -115,7 +113,6 @@ const styles = StyleSheet.create({
     legend: {
         flexDirection: 'row',
         gap: 14,
-        // padding: 10,
     },
     legendText: {
         flexDirection: 'row',

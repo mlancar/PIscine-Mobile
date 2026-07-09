@@ -1,8 +1,8 @@
-import { StyleSheet, TextInput, Text, TouchableOpacity, View, FlatList } from 'react-native';
 import { Colors } from '@/constants/theme';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
 import { useWeather } from '@/context/WeatherContext';
+import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function TopBar( { setError, input, setInput, setCities, setShowSuggestions} ) {
 
@@ -31,7 +31,6 @@ export default function TopBar( { setError, input, setInput, setCities, setShowS
     catch (error) {
       console.error(error);
     }
-
   };
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
@@ -46,15 +45,17 @@ export default function TopBar( { setError, input, setInput, setCities, setShowS
               searchCities(value, setCities);
               setShowSuggestions(true);
             }}
-            onSubmitEditing={() => searchCities(input)}
+            onSubmitEditing={() => {
+              searchCities(input);
+              setInput('');
+            }}
             placeholder="Search location..."
           />
-          
         </View>
         <View style={styles.sendContainer}>
           <Ionicons name="remove-outline" size={44} color="white" style={{ transform: [{ rotate: '90deg' }] }} />
           <TouchableOpacity onPress={() => { loadWeather() }}>
-            <Ionicons name="paper-plane" size={24} color="white" paddingRight="10"/>
+            <Ionicons name="location-outline" size={28} color="white" paddingRight="10"/>
           </TouchableOpacity>
         </View>
       </View>
@@ -90,11 +91,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary.background,
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
   input: {
     height: 40,
     fontSize: 22,
     paddingLeft: 10,
     color: 'white',
+    flex: 1,
   },
 });

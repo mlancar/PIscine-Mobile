@@ -1,6 +1,12 @@
 import * as Location from 'expo-location';
 import { createContext, useContext, useEffect, useState } from 'react';
 
+type Place = {
+        city: string;
+        region: string;
+        country: string;
+    } | null;
+
 const WeatherContext = createContext<{
     weekly: any;
     setWeekly: (value: any) => void;
@@ -8,11 +14,12 @@ const WeatherContext = createContext<{
     setHourly: (value: any) => void;
     weather: any;
     setWeather: (value: any) => void;
-    currentPlace: any;
+    currentPlace: Place;
     setCurrentPlace: (value: any) => void;
-    getWeather: (lat: number, lon: number) => void;
+    getWeather: (lat: number, lon: number, currentPlace?: Place) => Promise<void>;
     loadWeather: () => void;
-
+    error: string | undefined;
+    setError: (value: string | undefined) => void;
 }>({
     weekly: null,
     setWeekly: () => {},
@@ -22,8 +29,10 @@ const WeatherContext = createContext<{
     setWeather: () => {},
     currentPlace: null,
     setCurrentPlace: () => {},
-    getWeather: () => {},
+    getWeather: async() => {},
     loadWeather: () => {},
+    error: undefined,
+    setError: () => {},
 
 });
 
@@ -31,6 +40,8 @@ export function WeatherProvider({ children }) {
     const [weather, setWeather] = useState();
     const [hourly, setHourly] = useState();
     const [weekly, setWeekly] = useState();
+    const [error, setError] = useState<string | undefined>();
+
 
     const [currentPlace, setCurrentPlace] = useState<{
         city: string;
@@ -38,7 +49,8 @@ export function WeatherProvider({ children }) {
         country: string;
     } | null>(null);
     
-    const getWeather = async(lat, lon, currentPlace: {city: string; region: string; country: string;} | null = null) => {
+    const getWeather = async(lat, lon, currentPlace: Place = null) => {
+        setError(undefined);
         if (!currentPlace) {
             const [place] = await Location.reverseGeocodeAsync({ latitude: lat, longitude: lon });
             setCurrentPlace({
@@ -62,6 +74,7 @@ export function WeatherProvider({ children }) {
         })
         .catch((error) => {
             console.error(error);
+            setError('Something went wrong, please try again');
         })
     }
 
@@ -96,7 +109,7 @@ export function WeatherProvider({ children }) {
     }, []);
 
     return (
-        <WeatherContext.Provider value={{ weather, setWeather, getWeather, currentPlace, setCurrentPlace, hourly, setHourly, weekly, setWeekly, loadWeather }}>
+        <WeatherContext.Provider value={{ weather, setWeather, getWeather, currentPlace, setCurrentPlace, hourly, setHourly, weekly, setWeekly, loadWeather, error, setError }}>
         {children}
         </WeatherContext.Provider>
     );

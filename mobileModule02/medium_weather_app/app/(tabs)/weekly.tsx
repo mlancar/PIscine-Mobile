@@ -3,9 +3,21 @@ import WeatherCard from '@/components/WeatherCard';
 import { useWeather } from '@/context/WeatherContext';
 import { useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { runOnJS } from 'react-native-reanimated';
+import { router } from 'expo-router';
 
 export default function Weekly() {
-    
+  
+  const goToHome = () => router.replace('/today');
+
+  const gesture = Gesture.Pan()
+    .onEnd((e) => {
+      if (e.translationX > 100) {
+        runOnJS(goToHome)();
+      }
+    });
+
   type City = {
     id: string;
     name: string;
@@ -17,52 +29,58 @@ export default function Weekly() {
   const [cities, setCities] = useState<City[]>([]);
   const [input, setInput] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const { weather, getWeather, currentPlace, setCurrentPlace, hourly, setHourly, weekly, setWeekly } = useWeather();
-  const [error, setError] = useState();
+  const { weather, getWeather, currentPlace, hourly, weekly, error, setError } = useWeather();
 
   return (
-  <View style={styles.container}>
-    <TopBar
-      setError={setError}
-      input={input}
-      setInput={setInput}
-      setCities={setCities}
-      setShowSuggestions={setShowSuggestions}
-    />
-    {showSuggestions && cities.length > 0 && (
-      <FlatList
-          style={styles.suggestion}
-          data={cities}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-                onPress={() => {
-                    setCities([]);
-                    getWeather(item.latitude, item.longitude, { city: item.name, region: item.state, country: item.country});
-                    setShowSuggestions(false);
-                }}
-            >
-            <Text style={styles.searchText}>{item.name} ({item.country})</Text>
-          </TouchableOpacity>
-          )}
-        />
-      )}
-      <View style={styles.weatherContent}>
-        {!location ? (
-          <Text style={styles.textError} >Geolocation is not available, please enable it in your App settings</Text>
-        ) : (
-          <View>
-          {error ? (
-            <Text style={styles.textError} >{error}</Text>
-            ) : (
-              <View>
-                <WeatherCard mode="weekly" weekly={weekly} hourly={hourly} weather={weather} currentPlace={currentPlace}></WeatherCard>
-              </View>
+  <GestureDetector gesture={gesture}>
+    <View style={styles.container}>
+      <TopBar
+        setError={setError}
+        input={input}
+        setInput={setInput}
+        setCities={setCities}
+        setShowSuggestions={setShowSuggestions}
+      />
+      {showSuggestions && cities.length > 0 && (
+        <FlatList
+            style={styles.suggestion}
+            data={cities}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                  onPress={() => {
+                      setInput('');
+                      setCities([]);
+                      getWeather(item.latitude, item.longitude, { city: item.name, region: item.state, country: item.country});
+                      setShowSuggestions(false);
+                  }}
+                >
+                <View style={styles.searchText}>
+                  <Text style={{ fontSize: 20, fontWeight: 'bold'}}>{item.name}</Text>
+                  <Text style={{ fontSize: 20, paddingLeft: 8, color: '#828384'}}>{item.region}, {item.country}</Text>
+                </View>
+            </TouchableOpacity>
             )}
-          </View>
+          />
         )}
-      </View>
-  </View>
+        <View style={styles.weatherContent}>
+          {!currentPlace ? (
+            <Text style={styles.textError} >Geolocation is not available, please enable it in your App settings</Text>
+          ) : (
+            <View>
+            {error ? (
+              <Text style={styles.textError} >{error}</Text>
+              ) : (
+                <View>
+                  <WeatherCard mode="weekly" weekly={weekly} hourly={hourly} weather={weather} currentPlace={currentPlace}></WeatherCard>
+                </View>
+              )}
+            </View>
+          )}
+        </View>
+    </View>
+  </GestureDetector>
+  
   );
 }
 
@@ -72,7 +90,6 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   suggestion: {
-    // padding: 12,
     position: 'absolute',
     zIndex: 999,
     top: 119,
@@ -83,8 +100,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   searchText: {
-    padding: 18,
-    fontSize: 22,
+    flexDirection: 'row',
+    padding: 20,
     color: 'black',
     borderRadius: 10,
     borderStyle: 'solid',
@@ -101,7 +118,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 30,
     textAlign: 'center',
-
   },
   textError: {
     fontSize: 26,
@@ -112,8 +128,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: 'green',
     alignSelf: "stretch",
-
   },
 });

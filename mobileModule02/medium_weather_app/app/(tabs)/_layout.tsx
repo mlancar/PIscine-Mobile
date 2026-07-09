@@ -1,14 +1,11 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import { StyleSheet } from 'react-native';
 import { Spacing } from '@/constants/theme';
 import { Colors } from '@/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 
-
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
 
   return (
     <Tabs
@@ -17,6 +14,7 @@ export default function TabLayout() {
         header: () => false,
         tabBarStyle: {
           backgroundColor: '#ffffff',
+          height: 70,
         },
         tabBarActiveTintColor: '#6e6969',
         tabBarInactiveTintColor: '#cccccc',

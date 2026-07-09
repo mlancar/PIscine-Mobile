@@ -30,7 +30,7 @@ export default function TodayWeather({ hourly, weather, currentPlace }) {
             <Text style={styles.place}> {currentPlace?.region}, {currentPlace?.country}</Text>
         </View>
         <View style={styles.chart}>
-            <Text style={styles.title}>Today temparatures</Text>
+            <Text style={styles.title}>Today temperatures</Text>
             <LineChart
                 data={{
                     labels: hourly.time.slice(0, 24).map((t, index) => index % 3 === 0 ? t.split('T')[1].slice(0, 5) : ''),

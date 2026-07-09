@@ -5,7 +5,6 @@ import { StyleSheet, Text, View } from 'react-native';
 
 export default function CurrentlyWeather({ weather, currentPlace }) {
 
-    console.log("weather code descrption: ", weather.weathercode);
     return(
     <View style={styles.container}>
         <View style={styles.info}>
@@ -18,7 +17,6 @@ export default function CurrentlyWeather({ weather, currentPlace }) {
         </View>
     </View>
     );
-    
 }
 
 const styles = StyleSheet.create({
@@ -30,7 +28,6 @@ const styles = StyleSheet.create({
         flex: 1,
         gap: 30,
         paddingTop: 100,
-        // justifyContent: 'center',
         alignItems: 'center',
     },
     city: {
@@ -42,10 +39,8 @@ const styles = StyleSheet.create({
         fontSize: 28,
     },
     temperature: {
-        color: '#f5e108',
         color: 'white',
         fontSize: 100,
-
     },
     description: {
         fontSize: 30,
@@ -54,7 +49,5 @@ const styles = StyleSheet.create({
     wind: {
         fontSize: 22,
         color: 'white',
-
     },
-
 });
