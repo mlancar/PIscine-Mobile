@@ -16,7 +16,6 @@ export const unstable_settings = {
 export default function RootLayout() {
 
   useEffect(() => {
-      console.log("TEST ICI PAR LA");
       const subscription = Linking.addEventListener('url', async ({ url }) => {
           console.log('Deep link reçu:', url);
           await supabase.auth.exchangeCodeForSession(url);
@@ -26,36 +25,16 @@ export default function RootLayout() {
       });
       return () => subscription.remove();
     }, []);
-  const colorScheme = useColorScheme();
 
-    const theme = {
-    ...(colorScheme === 'dark' ? DarkTheme : DefaultTheme),
-
-    colors: {
-      ...(colorScheme === 'dark'
-        ? DarkTheme.colors
-        : DefaultTheme.colors),
-
-      background: 'transparent',
-      card: 'transparent',
-    },
-  };
 
   
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <LinearGradient
-        colors={['#000000', '#050505']}
-        style={{ flex:1 }}
-      >
-        <ThemeProvider value={theme}>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-          </Stack>
-          <StatusBar style="auto" />
-        </ThemeProvider>
-      </LinearGradient>
+    <GestureHandlerRootView style={{ flex: 1}}>
+      <Stack screenOptions={{ headerShown: false,contentStyle: {backgroundColor: '#181818'} }}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+      </Stack>
+      <StatusBar style="auto" />
     </GestureHandlerRootView>
 
   );
