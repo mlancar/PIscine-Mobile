@@ -1,13 +1,11 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { LinearGradient } from 'expo-linear-gradient';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useEffect } from 'react';
 import * as Linking from 'expo-linking';
 import { supabase } from '@/lib/supabase';
+import { EntriesProvider } from '@/context/EntriesContext';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -26,15 +24,15 @@ export default function RootLayout() {
       return () => subscription.remove();
     }, []);
 
-
-  
   return (
     <GestureHandlerRootView style={{ flex: 1}}>
-      <Stack screenOptions={{ headerShown: false,contentStyle: {backgroundColor: '#181818'} }}>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
+      <EntriesProvider>
+        <Stack screenOptions={{ headerShown: false,contentStyle: {backgroundColor: '#181818'} }}>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+        </Stack>
+        <StatusBar style="auto" />
+      </EntriesProvider>
     </GestureHandlerRootView>
 
   );

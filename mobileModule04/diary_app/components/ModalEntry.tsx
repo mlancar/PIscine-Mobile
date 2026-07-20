@@ -1,36 +1,45 @@
-import { StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native';
+import Button from '@/components/Button';
+import type { Entry } from '@/types/entry';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { Dispatch, SetStateAction } from 'react';
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+  type ModalDetailProps = {
+    selectedEntry: Entry | null;
+    setSelectedEntry: Dispatch<SetStateAction<Entry | null>>;
+  }
 
-export default function ModalEntry({ selectedEntry, setSelectedEntry }) {
+export default function ModalEntry({ selectedEntry, setSelectedEntry }: ModalDetailProps) {
 
-    return (
-        <Modal
-            animationType='fade'
-            transparent={true}
-            visible={!!selectedEntry}
-            onRequestClose={() =>
-                setSelectedEntry(null)}
-            >
-            <View style={styles.modalOverlay}>
-                <View style={styles.modalContent}>
-                <TouchableOpacity style={styles.closeButton} onPress={() => setSelectedEntry(null)}>
-                    <Ionicons name="close" size={22} ></Ionicons>
-                </TouchableOpacity>
-                <Text style={styles.modalText}>{selectedEntry?.created_at.split('T')[0]}</Text>
-                <View style={styles.separator}/>
-                <Text style={styles.modalText}>My feeling : {selectedEntry?.feeling}</Text>
-                <View style={styles.separator}/>
-                <Text style={styles.modalEntryContent}>{selectedEntry?.content}</Text>
-                <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-                    <TouchableOpacity>
-                        <Text style={styles.deleteButton}>Delete this entry</Text>
-                    </TouchableOpacity>
-                </View>
-                </View>
+  const deleteEntry = () => {
+    console.log("delete entry")
+  };
+
+  return (
+    <Modal
+        animationType='fade'
+        transparent={true}
+        visible={!!selectedEntry}
+        onRequestClose={() =>
+            setSelectedEntry(null)}
+        >
+        <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+            <TouchableOpacity style={styles.closeButton} onPress={() => setSelectedEntry(null)}>
+                <Ionicons name="close" size={22} ></Ionicons>
+            </TouchableOpacity>
+            <Text style={styles.modalText}>{selectedEntry?.created_at.split('T')[0]}</Text>
+            <View style={styles.separator}/>
+            <Text style={styles.modalText}>My feeling : {selectedEntry?.feeling}</Text>
+            <View style={styles.separator}/>
+            <Text style={styles.modalEntryContent}>{selectedEntry?.content}</Text>
+            <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                <Button text="Delete this entry" color='#810d0d' onPress={() => console.log("Delete entry")}/>
             </View>
-        </Modal>
-    );
+          </View>
+        </View>
+    </Modal>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -50,29 +59,17 @@ const styles = StyleSheet.create({
     position: 'relative',
     padding: 24,
   },
-  modalEntry: {
-
-  },
   modalText: {
     fontSize: 18,
   },
   modalEntryContent: {
     fontSize: 18,
-
   },
   closeButton: {
     position: 'absolute',
     top: 10,
     right: 10,
     zIndex: 1,
-  },
-  deleteButton: {
-    fontSize: 18,
-    backgroundColor: '#7c3636',
-    color: 'white',
-    borderRadius: 6,
-    padding: 6,
-    // width: '60%',
   },
   separator: {
     height: 2,
