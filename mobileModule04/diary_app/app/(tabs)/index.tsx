@@ -10,15 +10,12 @@ import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-
 export default function HomeScreen() {
 
   const session = useAuth();
   const [selectedEntry, setSelectedEntry] = useState<Entry | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const { entries, setEntries } = useEntries();
-
-  console.log("USER ID = ", session?.user.id);
 
   if (!session) {
     return (
@@ -37,8 +34,8 @@ export default function HomeScreen() {
           </View>
         <EntryCard entries={entries} setSelectedEntry={setSelectedEntry}/>
         </View>
-        <ModalEntry selectedEntry={selectedEntry} setSelectedEntry={setSelectedEntry}/>
-        <ModalCreateEntry modalVisible={modalVisible} setModalVisible={setModalVisible}/>
+        <ModalEntry selectedEntry={selectedEntry} setSelectedEntry={setSelectedEntry} onEntryDeleted={(deletedId) => setEntries((prev) => prev.filter((entry) => entry.id !== deletedId))}/>
+        <ModalCreateEntry modalVisible={modalVisible} setModalVisible={setModalVisible} onEntryCreated={(newEntry) => setEntries((prev) => [newEntry, ...prev])}/>
         <View style={{paddingBottom: 16}}>
           <Button text="New diary entry" color='#426729' onPress={() => setModalVisible(true)}/>
         </View>

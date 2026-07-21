@@ -1,19 +1,51 @@
-import { StyleSheet, Text, View, TouchableOpacity, Modal, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Modal, TextInput, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from 'react';
 import Button from '@/components/Button';
 import { Dispatch, SetStateAction } from 'react';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/lib/useAuth';
+import { Entry } from '@/types/entry';
 
 type ModalCreateEntryProps = {
 	modalVisible: boolean;
 	setModalVisible: Dispatch<SetStateAction<boolean>>;
+	onEntryCreated: (entry: Entry) => void;
 };
 
-export default function ModalCreateEntry({ modalVisible, setModalVisible}: ModalCreateEntryProps) {
+export default function ModalCreateEntry({ modalVisible, setModalVisible, onEntryCreated}: ModalCreateEntryProps) {
 
-	const [input, setInput] = useState('');
-	const [feeling, setFeeling] = useState<string | null>(null);
 	const feelings = ['😊', '😢', '😡', '😴', '😍'];
+	const [title, setTitle] = useState('');
+	const [content, setContent] = useState('');
+	const [feeling, setFeeling] = useState<string | null>(null);
+	const session = useAuth();
+
+	const saveEntry = async () => {
+		if (!session) {
+			return;
+		}
+		const { data, error } = await supabase
+			.from('entry')
+			.insert({
+				title,
+				content,
+				feeling,
+				user_id: session.user.id,
+			})
+			.select();
+
+		if (error) {
+			console.log(error.message);
+			return;
+		}
+
+		setTitle('');
+		setContent('');
+		setFeeling('');
+
+		onEntryCreated?.(data[0]);
+	}
 
   return (
     <Modal
@@ -23,49 +55,51 @@ export default function ModalCreateEntry({ modalVisible, setModalVisible}: Modal
 			onRequestClose={() =>
 				setModalVisible(false)}
 		>
-			<View style={styles.modalOverlay}>
-				<View style={styles.modalContent}>
-					<Text>Add an entry</Text>
-					<TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
-						<Ionicons name="close" size={22} ></Ionicons>
-					</TouchableOpacity>
-					<TextInput
-						value={input}
-						onChangeText={setInput}
-						placeholder='Title'
-						placeholderTextColor="#888"
-						style={styles.titleInput}
-						numberOfLines={1}
-					/>
-					<View style={styles.feelingRow}>
-						{feelings.map((emoji) => (
-								<TouchableOpacity
-										key={emoji}
-										onPress={() => setFeeling(emoji)}
-										style={[
-												styles.feelingButton,
-												feeling === emoji && styles.feelingButtonSelected,
-										]}
-								>
-										<Text style={styles.feelingEmoji}>{emoji}</Text>
-								</TouchableOpacity>
-						))}
-				</View>
-					<TextInput
-						value={input}
-						onChangeText={setInput}
-						placeholder='Write something...'
-						placeholderTextColor="#888"
-						style={styles.contentInput}
-						multiline={true}
-						numberOfLines={8}
-						scrollEnabled={true}
-					/>
-					<View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-              <Button text="Add" color='#76b24d' onPress={() => console.log("add new entry")}/>
+			<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+				<View style={styles.modalOverlay}>
+					<View style={styles.modalContent}>
+						<Text>Add an entry</Text>
+						<TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+							<Ionicons name="close" size={22} ></Ionicons>
+						</TouchableOpacity>
+						<TextInput
+							value={title}
+							onChangeText={setTitle}
+							placeholder='Title'
+							placeholderTextColor="#888"
+							style={styles.titleInput}
+							numberOfLines={1}
+						/>
+						<View style={styles.feelingRow}>
+							{feelings.map((emoji) => (
+									<TouchableOpacity
+											key={emoji}
+											onPress={() => setFeeling(emoji)}
+											style={[
+													styles.feelingButton,
+													feeling === emoji && styles.feelingButtonSelected,
+											]}
+									>
+											<Text style={styles.feelingEmoji}>{emoji}</Text>
+									</TouchableOpacity>
+							))}
+					</View>
+						<TextInput
+							value={content}
+							onChangeText={setContent}
+							placeholder='Write something...'
+							placeholderTextColor="#888"
+							style={styles.contentInput}
+							multiline={true}
+							numberOfLines={8}
+							scrollEnabled={true}
+						/>
+						<View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+							<Button text="Add" color='#76b24d' onPress={async () => {await saveEntry(); setModalVisible(false);}}/>
+						</View>
 					</View>
 				</View>
-			</View>
+			</TouchableWithoutFeedback>
     </Modal>
   );
 }

@@ -11,7 +11,7 @@ export default function TabLayout() {
       screenOptions={{
         header: () => false,
         sceneStyle: {
-          backgroundColor: '#181818',
+          backgroundColor: '#fefefe',
         },
         tabBarStyle: {
           backgroundColor: 'transparent',
@@ -22,18 +22,18 @@ export default function TabLayout() {
         tabBarActiveTintColor: '#ffffff',
         tabBarInactiveTintColor: '#ffffff',
       }}>
-        <Tabs.Screen
-          name="profile"
-          options={{
-            title: 'Profile',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
-          }}
-        />
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
         }}
       />
     </Tabs>

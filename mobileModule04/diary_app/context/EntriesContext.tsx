@@ -25,8 +25,8 @@ export function EntriesProvider({ children }: EntriesProviderProps) {
   async function fetchEntries() {
     const { data, error } = await supabase
       .from("entry")
-      .select("*");
-      // .order("created_at", { ascending: false });
+      .select('*')
+      .order("created_at", { ascending: false });
 
     if (error) {
       console.log("error", error);

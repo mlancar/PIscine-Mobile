@@ -2,31 +2,47 @@ import Button from '@/components/Button';
 import type { Entry } from '@/types/entry';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Dispatch, SetStateAction } from 'react';
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, StyleSheet, Text, TouchableOpacity, View, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { supabase } from '@/lib/supabase';
 
   type ModalDetailProps = {
     selectedEntry: Entry | null;
     setSelectedEntry: Dispatch<SetStateAction<Entry | null>>;
+    onEntryDeleted: (id: string) => void;
   }
 
-export default function ModalEntry({ selectedEntry, setSelectedEntry }: ModalDetailProps) {
+export default function ModalEntry({ selectedEntry, setSelectedEntry, onEntryDeleted }: ModalDetailProps) {
 
-  const deleteEntry = () => {
-    console.log("delete entry")
-  };
+  const deleteEntry = async () => {
+    if (!selectedEntry) {
+      return;
+    }
+    const { data, error } = await supabase
+      .from('entry')
+      .delete()
+      .eq('id', selectedEntry.id);
+
+    if (error) {
+      console.log(error.message);
+      return;
+    }
+    onEntryDeleted?.(selectedEntry.id);
+    setSelectedEntry(null);
+  }
 
   return (
     <Modal
-        animationType='fade'
-        transparent={true}
-        visible={!!selectedEntry}
-        onRequestClose={() =>
-            setSelectedEntry(null)}
-        >
+      animationType='fade'
+      transparent={true}
+      visible={!!selectedEntry}
+      onRequestClose={() =>
+          setSelectedEntry(null)}
+      >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
+          <View style={styles.modalContent}>
             <TouchableOpacity style={styles.closeButton} onPress={() => setSelectedEntry(null)}>
-                <Ionicons name="close" size={22} ></Ionicons>
+              <Ionicons name="close" size={22} ></Ionicons>
             </TouchableOpacity>
             <Text style={styles.modalText}>{selectedEntry?.created_at.split('T')[0]}</Text>
             <View style={styles.separator}/>
@@ -34,10 +50,11 @@ export default function ModalEntry({ selectedEntry, setSelectedEntry }: ModalDet
             <View style={styles.separator}/>
             <Text style={styles.modalEntryContent}>{selectedEntry?.content}</Text>
             <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-                <Button text="Delete this entry" color='#810d0d' onPress={() => console.log("Delete entry")}/>
+              <Button text="Delete this entry" color='#810d0d' onPress={async () => {await deleteEntry(); setSelectedEntry(null); console.log("Delete entry")}}/>
             </View>
           </View>
         </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 }

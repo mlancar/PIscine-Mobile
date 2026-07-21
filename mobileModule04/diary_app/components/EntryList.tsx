@@ -28,17 +28,15 @@ export default function EntryList({ entries, setSelectedEntry }: entryProps) {
 
 const styles = StyleSheet.create({
   text: {
-			color: 'black',
-			fontSize: 16,
+		color: 'black',
+		fontSize: 16,
 	},
 	entry: {
-			backgroundColor: '#614369',
-			height: 90,
-			padding: 8,
-			flexDirection: 'row',
-			justifyContent: 'space-evenly',
-			borderRadius: 8,
-			marginBottom: 12,
+		backgroundColor: '#614369',
+		height: 90,
+		padding: 8,
+		flexDirection: 'row',
+		justifyContent: 'space-evenly',
+		borderRadius: 8,
 	},
-
 });
