@@ -6,6 +6,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/useAuth';
 import { Entry } from '@/types/entry';
+import MyText from '@/components/MyText';
 
 type ModalCreateEntryProps = {
 	modalVisible: boolean;
@@ -15,7 +16,7 @@ type ModalCreateEntryProps = {
 
 export default function ModalCreateEntry({ modalVisible, setModalVisible, onEntryCreated}: ModalCreateEntryProps) {
 
-	const feelings = ['😊', '😢', '😡', '😴', '😍'];
+	const feelings = ['😊', '😐', '😢', '😡', '😴'];
 	const [title, setTitle] = useState('');
 	const [content, setContent] = useState('');
 	const [feeling, setFeeling] = useState<string | null>(null);
@@ -58,7 +59,7 @@ export default function ModalCreateEntry({ modalVisible, setModalVisible, onEntr
 			<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 				<View style={styles.modalOverlay}>
 					<View style={styles.modalContent}>
-						<Text>Add an entry</Text>
+						<MyText style={{color: '#676767'}}>NEW ENTRY</MyText>
 						<TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
 							<Ionicons name="close" size={22} ></Ionicons>
 						</TouchableOpacity>
@@ -95,7 +96,7 @@ export default function ModalCreateEntry({ modalVisible, setModalVisible, onEntr
 							scrollEnabled={true}
 						/>
 						<View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-							<Button text="Add" color='#76b24d' onPress={async () => {await saveEntry(); setModalVisible(false);}}/>
+							<Button text="Add" color='#76b24d' textColor='#ffffff' onPress={async () => {await saveEntry(); setModalVisible(false);}}/>
 						</View>
 					</View>
 				</View>
@@ -119,9 +120,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#e8e8e8',
     position: 'relative',
-    padding: 24,
-  },
-  modalEntry: {
+    padding: 18,
+		gap: 12,
 
   },
   modalText: {
@@ -143,8 +143,8 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
     backgroundColor: 'white',
-    marginBottom: 12,
-		// height: 120,
+    // marginBottom: 12,
+		fontFamily: "CourierPrime_400Regular",
 	},
 	contentInput: {
 		borderWidth: 1,
@@ -153,12 +153,16 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
     backgroundColor: 'white',
-    marginBottom: 12,
 		height: 120,
+		fontFamily: "CourierPrime_400Regular",
+    // marginBottom: 12,
+
 	},
 	feelingRow: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
+    // marginBottom: 12,
+
 	},
 	feelingButton: {
 		padding: 10,

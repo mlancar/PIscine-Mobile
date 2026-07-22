@@ -2,8 +2,10 @@ import Button from '@/components/Button';
 import type { Entry } from '@/types/entry';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Dispatch, SetStateAction } from 'react';
-import { Modal, StyleSheet, Text, TouchableOpacity, View, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { Modal, StyleSheet, Text, TouchableOpacity, View, Keyboard, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import { supabase } from '@/lib/supabase';
+import MyText from '@/components/MyText';
+import Separator from '@/components/Separator';
 
   type ModalDetailProps = {
     selectedEntry: Entry | null;
@@ -38,30 +40,34 @@ export default function ModalEntry({ selectedEntry, setSelectedEntry, onEntryDel
       onRequestClose={() =>
           setSelectedEntry(null)}
       >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <TouchableOpacity style={styles.closeButton} onPress={() => setSelectedEntry(null)}>
-              <Ionicons name="close" size={22} ></Ionicons>
-            </TouchableOpacity>
-            <Text style={styles.modalText}>{selectedEntry?.created_at.split('T')[0]}</Text>
-            <View style={styles.separator}/>
-            <Text style={styles.modalText}>My feeling : {selectedEntry?.feeling}</Text>
-            <View style={styles.separator}/>
-            <Text style={styles.modalEntryContent}>{selectedEntry?.content}</Text>
-            <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-              <Button text="Delete this entry" color='#810d0d' onPress={async () => {await deleteEntry(); setSelectedEntry(null); console.log("Delete entry")}}/>
-            </View>
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <TouchableOpacity style={styles.closeButton} onPress={() => setSelectedEntry(null)}>
+            <Ionicons name="close" size={22} ></Ionicons>
+          </TouchableOpacity>
+          <MyText style={styles.modalText}>{new Date(selectedEntry?.created_at ?? "").toLocaleDateString("en-US")}</MyText>
+          <Separator color='#000000' size={1}/>
+          <MyText style={styles.modalText}>My feeling : {selectedEntry?.feeling}</MyText>
+          <Separator color='#000000' size={1}/>
+          <ScrollView
+            style={{maxHeight: 100, height: 100}}
+            indicatorStyle='black'
+            showsVerticalScrollIndicator={true}
+          >
+            <MyText style={styles.modalEntryContent}>{selectedEntry?.content}</MyText>
+          </ScrollView>
+          <View style={styles.button}>
+            <Button text="DELETE" color='#810d0d' textColor='#f8f8f8' onPress={async () => {await deleteEntry(); setSelectedEntry(null); console.log("Delete entry")}}/>
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   modalOverlay: {
-    flex: 1,
+    height: "100%",
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
@@ -74,7 +80,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#e8e8e8',
     position: 'relative',
-    padding: 24,
+    padding: 18,
   },
   modalText: {
     fontSize: 18,
@@ -88,10 +94,8 @@ const styles = StyleSheet.create({
     right: 10,
     zIndex: 1,
   },
-  separator: {
-    height: 2,
-    backgroundColor: '#000000',
-    width: '100%',
-    marginVertical: 16,
+  button: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
 });

@@ -10,6 +10,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { Entry } from '@/types/entry';
 import ModalEntry from '@/components/ModalEntry';
+import MyText from '@/components/MyText';
 
 export default function Profile() {
 
@@ -32,13 +33,13 @@ export default function Profile() {
           </View>
           <ModalEntry selectedEntry={selectedEntry} setSelectedEntry={setSelectedEntry} onEntryDeleted={(deletedId) => setEntries((prev) => prev.filter((entry) => entry.id !== deletedId))}/>
           <View style={styles.feelingContainer}>
-            <Text style={{fontSize: 20, paddingBottom: 12}}>FEELINGS</Text>
+            <MyText style={{fontSize: 20, paddingBottom: 12}}>FEELINGS</MyText>
             <View style={styles.feelingColumn}>
-              <Text style={styles.feelingEmoji}>😊 HAPPY</Text>
-              <Text style={styles.feelingEmoji}>😐 NEUTRAL</Text>
-              <Text style={styles.feelingEmoji}>😢 SAD</Text>
-              <Text style={styles.feelingEmoji}>😡 ANGRY</Text>
-              <Text style={styles.feelingEmoji}>😴 TIRED</Text>
+              <MyText style={styles.feelingEmoji}>😊 HAPPY</MyText>
+              <MyText style={styles.feelingEmoji}>😐 NEUTRAL</MyText>
+              <MyText style={styles.feelingEmoji}>😢 SAD</MyText>
+              <MyText style={styles.feelingEmoji}>😡 ANGRY</MyText>
+              <MyText style={styles.feelingEmoji}>😴 TIRED</MyText>
             </View>
           </View>
           <ModalCreateEntry modalVisible={modalVisible} setModalVisible={setModalVisible} onEntryCreated={(newEntry) => setEntries((prev) => [newEntry, ...prev])}/>

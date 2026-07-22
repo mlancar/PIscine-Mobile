@@ -11,7 +11,7 @@ export default function TabLayout() {
       screenOptions={{
         header: () => false,
         sceneStyle: {
-          backgroundColor: '#fefefe',
+          backgroundColor: '#ebeaea',
         },
         tabBarStyle: {
           backgroundColor: 'transparent',
@@ -19,8 +19,12 @@ export default function TabLayout() {
           elevation: 0,
           shadowOpacity: 0,
         },
-        tabBarActiveTintColor: '#ffffff',
-        tabBarInactiveTintColor: '#ffffff',
+        tabBarLabelStyle: {
+          fontFamily: 'CourierPrime_400Regular',
+          fontSize: 12,
+        },
+        tabBarActiveTintColor: '#4e4e4e',
+        tabBarInactiveTintColor: '#020202',
       }}>
       <Tabs.Screen
         name="index"

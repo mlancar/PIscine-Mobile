@@ -9,6 +9,8 @@ import type { Entry } from '@/types/entry';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import MyText from '@/components/MyText';
+import Separator from "@/components/Separator";
 
 export default function HomeScreen() {
 
@@ -16,11 +18,21 @@ export default function HomeScreen() {
   const [selectedEntry, setSelectedEntry] = useState<Entry | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const { entries, setEntries } = useEntries();
+  const today = new Date();
+
+  const date = today.toLocaleDateString("en-EN", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  const formattedDay = date.toUpperCase();
 
   if (!session) {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>WELCOME TO YOUR DIARY</Text>
+        <MyText style={styles.text}>WELCOME TO YOUR DIARY</MyText>
         <GoogleAuth />
       </View>
     );
@@ -28,17 +40,20 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView  style={styles.container} edges={['top']}>
-        <View style={styles.entryContainer}>
-          <View style={{padding: 12}}>
-            <Text style={{fontSize: 24}}>Your last diary entry</Text>
-          </View>
+      <View style={{marginTop: 16}}>
+        <MyText style={{color: '#5f5f5f', fontSize: 12}}>{formattedDay}</MyText>
+        <MyText style={{fontSize: 32, color: '#464646'}}>MY JOURNAL</MyText>
+      </View>
+      <Separator color='#000000' size={2}/>
+      <View style={styles.entryContainer}>
+        <MyText style={{fontSize: 20, color: '#656565', paddingBottom: 12}}>ALL ENTRIES</MyText>
         <EntryCard entries={entries} setSelectedEntry={setSelectedEntry}/>
-        </View>
-        <ModalEntry selectedEntry={selectedEntry} setSelectedEntry={setSelectedEntry} onEntryDeleted={(deletedId) => setEntries((prev) => prev.filter((entry) => entry.id !== deletedId))}/>
-        <ModalCreateEntry modalVisible={modalVisible} setModalVisible={setModalVisible} onEntryCreated={(newEntry) => setEntries((prev) => [newEntry, ...prev])}/>
-        <View style={{paddingBottom: 16}}>
-          <Button text="New diary entry" color='#426729' onPress={() => setModalVisible(true)}/>
-        </View>
+      </View>
+      <View style={{paddingBottom: 20}}>
+        <Button text="+ NEW ENTRY" color='#f8f8f8' textColor='#080808'onPress={() => setModalVisible(true)}/>
+      </View>
+      <ModalCreateEntry modalVisible={modalVisible} setModalVisible={setModalVisible} onEntryCreated={(newEntry) => setEntries((prev) => [newEntry, ...prev])}/>
+      <ModalEntry selectedEntry={selectedEntry} setSelectedEntry={setSelectedEntry} onEntryDeleted={(deletedId) => setEntries((prev) => prev.filter((entry) => entry.id !== deletedId))}/>
     </SafeAreaView>
   );
 }
@@ -54,11 +69,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   entryContainer: {
-    padding: 12,
-    margin: 22,
-    backgroundColor: '#712121',
+    padding: 20,
     width: '90%',
-    height: '85%',
+    height: '80%',
     borderRadius: 8,
+    justifyContent: 'flex-start',
   },
 });

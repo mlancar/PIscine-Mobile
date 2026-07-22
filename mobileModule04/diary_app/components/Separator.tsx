@@ -2,17 +2,17 @@ import { StyleSheet, View } from 'react-native';
 
 type colorProps = {
 	color: string;
+  size: number;
 }
-export default function Separator({color}: colorProps) {
+export default function Separator({color, size}: colorProps) {
 
   return (
-    <View style={[styles.separator, {backgroundColor: color}]}></View>
+    <View style={[styles.separator, {backgroundColor: color, height: size}]}></View>
   );
 }
 
 const styles = StyleSheet.create({
 	separator: {
-    height: 1,
     backgroundColor: '#000000',
     width: '100%',
     marginVertical: 16,
