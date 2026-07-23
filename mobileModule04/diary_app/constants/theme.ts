@@ -4,18 +4,22 @@
  */
 
 import { Platform } from 'react-native';
+import { ViewStyle } from "react-native";
 
 const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
+    text: '#656565',
+    background: '#ebeaea',
+    foreground: '#fcfbfb',
     tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    icon: '#464646',
+    tabIconDefault: '#020202',
+    tabIconSelected: '#4e4e4e',
+    button: '#f8f8f8',
+    darkText: '#242424',
   },
   dark: {
     text: '#ECEDEE',
@@ -51,3 +55,25 @@ export const Fonts = Platform.select({
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 });
+
+export const Shadows: { card: ViewStyle } = {
+  card: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5, // Android
+  },
+};
+
+export const FontSize = {
+  extraSmall: 12,
+  small: 14,
+  medium: 16,
+  large: 20,
+  xl: 24,
+  xxl: 40,
+};

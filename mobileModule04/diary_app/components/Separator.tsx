@@ -13,7 +13,7 @@ export default function Separator({color, size}: colorProps) {
 
 const styles = StyleSheet.create({
 	separator: {
-    backgroundColor: '#000000',
+    zIndex: 999,
     width: '100%',
     marginVertical: 16,
 		zIndex: 99

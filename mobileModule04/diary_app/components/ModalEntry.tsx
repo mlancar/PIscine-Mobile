@@ -6,6 +6,7 @@ import { Modal, StyleSheet, Text, TouchableOpacity, View, Keyboard, TouchableWit
 import { supabase } from '@/lib/supabase';
 import MyText from '@/components/MyText';
 import Separator from '@/components/Separator';
+import { Colors, FontSize } from '@/constants/theme';
 
   type ModalDetailProps = {
     selectedEntry: Entry | null;
@@ -42,19 +43,20 @@ export default function ModalEntry({ selectedEntry, setSelectedEntry, onEntryDel
       >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          <TouchableOpacity style={styles.closeButton} onPress={() => setSelectedEntry(null)}>
+          <TouchableOpacity style={styles.closeButton} hitSlop={20} onPress={() => setSelectedEntry(null)}>
             <Ionicons name="close" size={22} ></Ionicons>
           </TouchableOpacity>
           <MyText style={styles.modalText}>{new Date(selectedEntry?.created_at ?? "").toLocaleDateString("en-US")}</MyText>
-          <Separator color='#000000' size={1}/>
+          <Separator color='black' size={1}/>
           <MyText style={styles.modalText}>My feeling : {selectedEntry?.feeling}</MyText>
-          <Separator color='#000000' size={1}/>
+          <Separator color='black' size={1}/>
           <ScrollView
             style={{maxHeight: 100, height: 100}}
             indicatorStyle='black'
             showsVerticalScrollIndicator={true}
+            hitSlop={15}
           >
-            <MyText style={styles.modalEntryContent}>{selectedEntry?.content}</MyText>
+            <MyText style={styles.modalText}>{selectedEntry?.content}</MyText>
           </ScrollView>
           <View style={styles.button}>
             <Button text="DELETE" color='#810d0d' textColor='#f8f8f8' onPress={async () => {await deleteEntry(); setSelectedEntry(null); console.log("Delete entry")}}/>
@@ -78,15 +80,12 @@ const styles = StyleSheet.create({
     maxHeight: '40%',
     justifyContent: 'space-evenly',
     borderRadius: 8,
-    backgroundColor: '#e8e8e8',
+    backgroundColor: Colors.light.foreground,
     position: 'relative',
     padding: 18,
   },
   modalText: {
-    fontSize: 18,
-  },
-  modalEntryContent: {
-    fontSize: 18,
+    fontSize: FontSize.medium,
   },
   closeButton: {
     position: 'absolute',

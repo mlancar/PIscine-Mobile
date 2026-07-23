@@ -1,6 +1,5 @@
 import { GoogleAuth } from "@/components/Auth";
 import Button from '@/components/Button';
-import EntryCard from '@/components/EntryList';
 import ModalCreateEntry from '@/components/ModalCreateEntry';
 import ModalEntry from '@/components/ModalEntry';
 import { useEntries } from '@/context/EntriesContext';
@@ -11,6 +10,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MyText from '@/components/MyText';
 import Separator from "@/components/Separator";
+import { FontSize, Colors } from "@/constants/theme";
+import EntryList from "@/components/EntryList";
 
 export default function HomeScreen() {
 
@@ -40,20 +41,28 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView  style={styles.container} edges={['top']}>
-      <View style={{marginTop: 16}}>
-        <MyText style={{color: '#5f5f5f', fontSize: 12}}>{formattedDay}</MyText>
-        <MyText style={{fontSize: 32, color: '#464646'}}>MY JOURNAL</MyText>
+
+      <View style={styles.header}>
+        <MyText style={{color: '#5f5f5f', fontSize: FontSize.small, paddingBottom: 12}}>{formattedDay}</MyText>
+        <MyText style={{fontSize: FontSize.xxl, color: Colors.light.icon}}>MY JOURNAL</MyText>
+        <Separator color='black' size={2}/>
       </View>
-      <Separator color='#000000' size={2}/>
+
       <View style={styles.entryContainer}>
-        <MyText style={{fontSize: 20, color: '#656565', paddingBottom: 12}}>ALL ENTRIES</MyText>
-        <EntryCard entries={entries} setSelectedEntry={setSelectedEntry}/>
+        <View style={{height: '90%', paddingBottom: 10}}>
+          <MyText style={{fontSize: FontSize.large, color: Colors.light.text}}>ALL ENTRIES</MyText>
+          <EntryList entries={entries} setSelectedEntry={setSelectedEntry}/>
+        </View>
+
+        <View style={{alignItems: 'center'}}>
+          <Button text="+ NEW ENTRY" color={Colors.light.button} textColor='#080808'onPress={() => setModalVisible(true)}/>
+        </View>
+
+        <ModalCreateEntry modalVisible={modalVisible} setModalVisible={setModalVisible} onEntryCreated={(newEntry) => setEntries((prev) => [newEntry, ...prev])}/>
+        <ModalEntry selectedEntry={selectedEntry} setSelectedEntry={setSelectedEntry} onEntryDeleted={(deletedId) => setEntries((prev) => prev.filter((entry) => entry.id !== deletedId))}/>
+
       </View>
-      <View style={{paddingBottom: 20}}>
-        <Button text="+ NEW ENTRY" color='#f8f8f8' textColor='#080808'onPress={() => setModalVisible(true)}/>
-      </View>
-      <ModalCreateEntry modalVisible={modalVisible} setModalVisible={setModalVisible} onEntryCreated={(newEntry) => setEntries((prev) => [newEntry, ...prev])}/>
-      <ModalEntry selectedEntry={selectedEntry} setSelectedEntry={setSelectedEntry} onEntryDeleted={(deletedId) => setEntries((prev) => prev.filter((entry) => entry.id !== deletedId))}/>
+    
     </SafeAreaView>
   );
 }
@@ -62,17 +71,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-between',
+    padding: 12,
+  },
+  header: {
+    marginTop: 16,
+    alignItems: 'center',
+    width: '100%',
   },
   text: {
-    color: 'black',
-    fontSize: 16,
+    color: Colors.light.text,
+    fontSize: FontSize.medium,
   },
   entryContainer: {
-    padding: 20,
-    width: '90%',
-    height: '80%',
-    borderRadius: 8,
-    justifyContent: 'flex-start',
+    flex: 1,
+    justifyContent: 'center',
+    width: '100%',
   },
 });

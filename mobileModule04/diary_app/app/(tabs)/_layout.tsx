@@ -2,6 +2,7 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Colors } from '@/constants/theme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -11,7 +12,7 @@ export default function TabLayout() {
       screenOptions={{
         header: () => false,
         sceneStyle: {
-          backgroundColor: '#ebeaea',
+          backgroundColor: Colors.light.background,
         },
         tabBarStyle: {
           backgroundColor: 'transparent',
@@ -23,8 +24,8 @@ export default function TabLayout() {
           fontFamily: 'CourierPrime_400Regular',
           fontSize: 12,
         },
-        tabBarActiveTintColor: '#4e4e4e',
-        tabBarInactiveTintColor: '#020202',
+        tabBarActiveTintColor: Colors.light.tabIconSelected,
+        tabBarInactiveTintColor: Colors.light.tabIconDefault,
       }}>
       <Tabs.Screen
         name="index"

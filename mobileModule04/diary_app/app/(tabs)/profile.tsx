@@ -11,6 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import type { Entry } from '@/types/entry';
 import ModalEntry from '@/components/ModalEntry';
 import MyText from '@/components/MyText';
+import { Shadows, FontSize, Colors } from '@/constants/theme';
 
 export default function Profile() {
 
@@ -18,35 +19,72 @@ export default function Profile() {
   const [modalVisible, setModalVisible] = useState(false);
   const { entries, setEntries } = useEntries();
   const lastEntry = entries[0];
+  const lastLastEntry = entries[1];
   const [selectedEntry, setSelectedEntry] = useState<Entry | null>(null);
+  
+	const feelings = ['😊', '😐', '😢', '😡', '😴'];
 
+  const feelingStats = feelings.map((feeling) => {
+    const count = entries.filter(
+      (entry) => entry.feeling === feeling
+    ).length;
+
+    return {
+      feeling,
+      percentage: entries.length > 0
+      ? Math.round((count / entries.length) * 100)
+      : 0,
+    };
+  });
+
+  console.log(feelingStats);
+  
   if (session) {
     return (
       <SafeAreaView  style={styles.container} edges={['top']}>
+
         <View style={{width: '100%'}}>
           <ProfileCard/>
-          <Separator color='white'/>
+          <Separator color='black' size={2}/>
         </View>
-        <View style={{flex: 1, width: '100%', justifyContent: 'space-between', padding: 8}}>
-          <View style={{width: '100%', backgroundColor: '#923029', padding: 8, borderRadius: 8}}>
+
+        <View style={styles.entriesContainer}>
+          <View>
+            <MyText style={styles.text}>LAST ENTRIES</MyText>
             <EntryCard setSelectedEntry={setSelectedEntry} item={lastEntry}/>
+            <EntryCard setSelectedEntry={setSelectedEntry} item={lastLastEntry}/>
           </View>
-          <ModalEntry selectedEntry={selectedEntry} setSelectedEntry={setSelectedEntry} onEntryDeleted={(deletedId) => setEntries((prev) => prev.filter((entry) => entry.id !== deletedId))}/>
-          <View style={styles.feelingContainer}>
-            <MyText style={{fontSize: 20, paddingBottom: 12}}>FEELINGS</MyText>
-            <View style={styles.feelingColumn}>
-              <MyText style={styles.feelingEmoji}>😊 HAPPY</MyText>
-              <MyText style={styles.feelingEmoji}>😐 NEUTRAL</MyText>
-              <MyText style={styles.feelingEmoji}>😢 SAD</MyText>
-              <MyText style={styles.feelingEmoji}>😡 ANGRY</MyText>
-              <MyText style={styles.feelingEmoji}>😴 TIRED</MyText>
-            </View>
+
+          <View style={styles.feelingsContainer}>
+            <MyText style={styles.text}>FEELINGS</MyText>
+            {/* <View style={styles.feelingColumn}>
+            {feelingStats.map((stat) => (
+              <View>
+                <MyText style={[styles.feelingEmoji, {color: Colors.light.icon}]}>{stat.feeling} {stat.percentage}%</MyText>
+              </View>
+            ))} */}
+            <View style={styles.statsContainer}>
+              {feelingStats.map((stat) => (
+                  <View key={stat.feeling} style={styles.statRow}>
+                      <MyText style={styles.statEmoji}>{stat.feeling}</MyText>
+                      <View style={styles.barBackground}>
+                          <View style={[styles.barFill, { width: `${stat.percentage}%` }]} />
+                      </View>
+                      <Text style={styles.statPercentage}>{stat.percentage}%</Text>
+                  </View>
+              ))}
           </View>
-          <ModalCreateEntry modalVisible={modalVisible} setModalVisible={setModalVisible} onEntryCreated={(newEntry) => setEntries((prev) => [newEntry, ...prev])}/>
+            {/* </View> */}
+          </View>
+
           <View style={{alignItems: 'center'}}>
-            <Button text="New diary entry" color='#426729' onPress={() => setModalVisible(true)}/>
+            <Button text="+ NEW ENTRY" color={Colors.light.button} onPress={() => setModalVisible(true)}/>
           </View>
-        </View> 
+
+        <ModalEntry selectedEntry={selectedEntry} setSelectedEntry={setSelectedEntry} onEntryDeleted={(deletedId) => setEntries((prev) => prev.filter((entry) => entry.id !== deletedId))}/>
+        <ModalCreateEntry modalVisible={modalVisible} setModalVisible={setModalVisible} onEntryCreated={(newEntry) => setEntries((prev) => [newEntry, ...prev])}/>
+        </View>
+  
       </SafeAreaView>
     );
   }
@@ -55,34 +93,54 @@ export default function Profile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 8
+    padding: 12,
   },
   text: {
-    color: 'white',
-    fontSize: 26,
+    fontSize: FontSize.large,
+    color: Colors.light.text,
   },
-  button : {
-    color: '#f9f9f9',
-    backgroundColor: '#a2bbd8',
-  },
-  feelingContainer: {
-    padding: 12,
-    alignItems: 'center',
-    height: '65%',
-    backgroundColor: '#982f2f',
-    borderRadius: 8
-  },
-  feelingColumn: {
-		justifyContent: 'space-evenly',
-    padding: 10,
+  entriesContainer: {
     flex: 1,
+    justifyContent: 'space-evenly',
     width: '100%',
-    backgroundColor: '#5e4273',
-    borderRadius: 8
+  },
+  feelingsContainer: {
+  },
+  statsContainer: {
+    height: 256,
+    backgroundColor: Colors.light.foreground,
+		justifyContent: 'space-evenly',
+    padding: 12,
+    borderRadius: 8,
+    margin: 8,
+    // gap: 4,
+    ...Shadows.card,
 	},
   feelingEmoji: {
-		fontSize: 30,
+		fontSize: 32,
 	},
+  statRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 10,
+  },
+  statEmoji: {
+      fontSize: 26,
+  },
+  barBackground: {
+      flex: 1,
+      height: 12,
+      backgroundColor: '#e0ddd4',
+      marginHorizontal: 10
+  },
+  barFill: {
+      height: '100%',
+      backgroundColor: Colors.light.icon,
+  },
+  statPercentage: {
+      fontSize: FontSize.medium,
+      width: 36,
+      textAlign: 'right',
+  },
 });

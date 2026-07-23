@@ -1,8 +1,9 @@
 import type { Entry } from '@/types/entry';
 import { Dispatch, SetStateAction } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import MyText from '@/components/MyText';
 import MyBoldText from '@/components/MyBoldText';
+import { Shadows, FontSize, Colors } from '@/constants/theme';
 
 type EntryProps = {
   item: Entry;
@@ -12,7 +13,7 @@ type EntryProps = {
 export default function EntryCard({setSelectedEntry, item}: EntryProps) {
 
   return (
-    <TouchableOpacity onPress={() => setSelectedEntry(item)}>
+    <TouchableOpacity hitSlop={15} onPress={() => setSelectedEntry(item)}>
       <View style={styles.entry}>
         <View style={styles.upperEntry}>
           <MyText style={styles.text}>{new Date(item.created_at).toLocaleDateString("en-US")}</MyText>
@@ -29,23 +30,16 @@ export default function EntryCard({setSelectedEntry, item}: EntryProps) {
 
 const styles = StyleSheet.create({
   text: {
-      color: 'black',
-      fontSize: 16,
+      color: Colors.light.darkText,
+      fontSize: FontSize.medium,
   },
   entry: {
-      backgroundColor: '#fcfbfb',
+      backgroundColor: Colors.light.foreground,
       height: 100,
       padding: 12,
       borderRadius: 8,
       margin: 8,
-
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 0,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
+      ...Shadows.card,
   },
   upperEntry: {
     width: '100%',
